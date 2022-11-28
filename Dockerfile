@@ -1,17 +1,13 @@
-# Set the version to use
-#FROM rustlang/rust:nightly
-FROM debian:bullseye-slim
+# Builder Image
+FROM debian:bullseye-slim AS builder
 
-ARG user=user
-ARG group_id=2424
-ARG user_id=4242
-ARG group=docker
-
-#ENV UID=${user_id}
-#ENV GID=${group_id}
+ARG GIT_REPO=https://github.com/massalabs/massa
 
 # Update the machine
 RUN apt-get update -y
+
+# Upgrade the machine
+RUN apt-get upgrade -y
 
 # Install required packages
 RUN apt-get install pkg-config \
@@ -19,15 +15,12 @@ RUN apt-get install pkg-config \
                     git \
                     build-essential \
                     python3 \
-                    libssl-dev \
                     libclang-dev -y
 
 # Install rustup using curl
-#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -y | sh
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 
 # Configure the path for rust
-#RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install nigthly using rustup
@@ -39,9 +32,58 @@ RUN rustup default nightly
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
 
-# Create the group docker and add the user "user" to the group docker
+# Create the user user
 RUN useradd user -m -u 1001
 
+# Set the username user and the password user
 RUN echo "user:user" | chpasswd
 
-#RUN cargo -help
+# Clone the repository
+RUN git clone ${GIT_REPO}
+
+RUN cargo build --release --bin massa-node --bin massa-client 
+
+WORKDIR /massa
+
+
+############# RUNTIME #############
+
+# Production Image
+FROM debian:bullseye-slim AS runtime
+
+ARG GIT_REPO=https://github.com/massalabs/massa
+
+# Update the machine
+RUN apt-get update -y
+
+# Install required packages
+RUN apt-get install python3 \
+                    git -y
+
+# Upgrade the machine
+RUN apt-get upgrade -y
+
+# Clears out the local repository of retrieved package files
+RUN apt-get clean -y
+
+# Create the user user
+RUN useradd user -m -u 1001
+
+# Set the username user and the password user
+RUN echo "user:user" | chpasswd
+
+# Clone the repository
+RUN git clone ${GIT_REPO}
+
+WORKDIR /massa
+
+# To Fix :
+#COPY --from=builder /massa-client/config /source/massa-client/config
+#COPY --from=builder /massa-client/base_config /source/massa-client/base_config
+#COPY --from=builder /target/release/massa-client /source/massa-client
+#
+#COPY --from=builder /massa-node/config /source/massa-node/config
+#COPY --from=builder /massa-node/base_config /source/massa-node/base_config
+#COPY --from=builder /target/release/massa-node /source/massa-node
+
+EXPOSE 31244 31245 33034 33035
