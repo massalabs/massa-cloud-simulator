@@ -6,24 +6,26 @@ services:
       context: .
       dockerfile: ./Dockerfile
     image: massa/poc-testnet:v1
-    user: "user"
+    user: ${user}
     #restart: always
     ports:
       - "33034:33034"
+      #- "33034:53034"
+      #- "33035:53035"
     command: "python3 -m http.server 8000"
-    #volumes:
-    #  - VAR:path_value
 
   poc-testnet-node-2:
     container_name: poc-testnet-2
     build:
       context: .
       dockerfile: ./Dockerfile
+    #env_file:
+    #  - .env
     image: massa/poc-testnet:v1
-    user: "user"
+    user: ${user}
     command: "python3 -m http.server 8000"
     #restart: always
     ports:
-      - "33034:43034"
-    #volumes:
-    #  - VAR:path_value
+      - "33035:33035"
+      #- "33034:43034"
+      #- "33035:43035"
