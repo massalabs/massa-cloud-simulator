@@ -1,7 +1,7 @@
 # BuildTime Image
 FROM debian:bullseye-slim AS BuildTime
 
-ARG USER="user"
+ENV USER="user"
 
 # Update the machine
 RUN apt-get update -y
@@ -51,8 +51,8 @@ RUN cargo build --release --bin massa-node --bin massa-client
 # Production Image
 FROM debian:bullseye-slim AS runtime
 
-ARG USER="user"
-ARG PSWD_NODE="massar"
+ENV USER="user"
+ARG PSWD_NODE="user"
 
 # Update the machine
 RUN apt-get update -y
