@@ -2,11 +2,11 @@ version: "3.3"
 services:
   poc-testnet-node-1:
     container_name: poc-testnet-1
+    env_file: .env
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: massa/poc-testnet:v1
-    env_file: .env
+    image: massa/poc-testnet:${TAG}
     user: ${user}
     #restart: always
     ports:
@@ -17,11 +17,11 @@ services:
 
   poc-testnet-node-2:
     container_name: poc-testnet-2
+    env_file: .env
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: massa/poc-testnet:v1
-    env_file: .env
+    image: massa/poc-testnet:${TAG}
     user: ${user}
     command: "python3 -m http.server 8000"
     #restart: always
