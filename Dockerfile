@@ -1,7 +1,5 @@
-# Builder Image
-FROM debian:bullseye-slim AS builder
-
-ARG GIT_REPO=https://github.com/massalabs/massa
+# BuildTime Image
+FROM debian:bullseye-slim AS BuildTime
 
 # Update the machine
 RUN apt-get update -y
@@ -24,10 +22,10 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install nigthly using rustup
-RUN rustup toolchain install nightly
+RUN rustup toolchain install nightly-2022-11-14
 
 # Set nigthly as default
-RUN rustup default nightly
+RUN rustup default nightly-2022-11-14
 
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
@@ -39,26 +37,25 @@ RUN useradd user -m -u 1001
 RUN echo "user:user" | chpasswd
 
 # Clone the repository
-RUN git clone ${GIT_REPO}
+RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
-RUN cargo build --release --bin massa-node --bin massa-client 
-
+# Move to the directory massa
 WORKDIR /massa
 
+# Build massa-node and the massa-client
+RUN cargo build --release --bin massa-node --bin massa-client 
 
 ############# RUNTIME #############
 
 # Production Image
 FROM debian:bullseye-slim AS runtime
 
-ARG GIT_REPO=https://github.com/massalabs/massa
-
 # Update the machine
 RUN apt-get update -y
 
 # Install required packages
-RUN apt-get install python3 \
-                    git -y
+RUN apt-get install git \
+                    python3 -y
 
 # Upgrade the machine
 RUN apt-get upgrade -y
@@ -73,17 +70,20 @@ RUN useradd user -m -u 1001
 RUN echo "user:user" | chpasswd
 
 # Clone the repository
-RUN git clone ${GIT_REPO}
+RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
+# Move to the directory massa
 WORKDIR /massa
 
-# To Fix :
-#COPY --from=builder /massa-client/config /source/massa-client/config
-#COPY --from=builder /massa-client/base_config /source/massa-client/base_config
-#COPY --from=builder /target/release/massa-client /source/massa-client
-#
-#COPY --from=builder /massa-node/config /source/massa-node/config
-#COPY --from=builder /massa-node/base_config /source/massa-node/base_config
-#COPY --from=builder /target/release/massa-node /source/massa-node
+# Copy the config and the binarie of Massa Client
+COPY --from=BuildTime ./massa/massa-client/config/ ./source/massa-client/config/
+COPY --from=BuildTime ./massa/massa-client/base_config/ ./source/massa-client/base_config/
+COPY --from=BuildTime ./massa/target/release/massa-client ./source/massa-client
 
+# Copy the config and the binarie of Massa Node
+COPY --from=BuildTime /massa/massa-node/config/ ./source/massa-node/config/
+COPY --from=BuildTime /massa/massa-node/base_config/ ./source/massa-node/base_config/
+COPY --from=BuildTime /massa/target/release/massa-node ./source/massa-node
+
+# Expose ports used by Massa
 EXPOSE 31244 31245 33034 33035
