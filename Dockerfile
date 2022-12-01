@@ -1,6 +1,8 @@
 # BuildTime Image
 FROM debian:bullseye-slim AS BuildTime
 
+ARG USER="user"
+
 # Update the machine
 RUN apt-get update -y
 
@@ -30,11 +32,11 @@ RUN rustup default nightly-2022-11-14
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
 
-# Create the user user
-RUN useradd user -m -u 1001
+# Create the user ${USER}
+RUN useradd ${USER} -m -u 1001
 
-# Set the username user and the password user
-RUN echo "user:user" | chpasswd
+# Set the username ${USER} and the password ${USER}
+RUN echo "${USER}:${USER}" | chpasswd
 
 # Clone the repository
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
@@ -46,9 +48,11 @@ WORKDIR /massa
 RUN cargo build --release --bin massa-node --bin massa-client 
 
 ############# RUNTIME #############
-
 # Production Image
 FROM debian:bullseye-slim AS runtime
+
+ARG USER="user"
+ARG PSWD_NODE="massar"
 
 # Update the machine
 RUN apt-get update -y
@@ -63,27 +67,39 @@ RUN apt-get upgrade -y
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
 
-# Create the user user
-RUN useradd user -m -u 1001
+# Create the user ${USER}
+RUN useradd ${USER} -m -u 1001
 
-# Set the username user and the password user
-RUN echo "user:user" | chpasswd
+# Set the username ${USER} and the password ${USER}
+RUN echo "${USER}:${USER}" | chpasswd
 
 # Clone the repository
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
 # Move to the directory massa
-WORKDIR /massa
+WORKDIR /massa_exec_files
 
 # Copy the config and the binarie of Massa Client
-COPY --from=BuildTime ./massa/massa-client/config/ ./source/massa-client/config/
-COPY --from=BuildTime ./massa/massa-client/base_config/ ./source/massa-client/base_config/
-COPY --from=BuildTime ./massa/target/release/massa-client ./source/massa-client
+COPY --from=BuildTime /massa/massa-client/config/ /massa_exec_files/massa-client/config/
+COPY --from=BuildTime /massa/massa-client/base_config/ /massa_exec_files/massa-client/base_config/
+COPY --from=BuildTime /massa/target/release/massa-client /massa_exec_files/massa-client
 
 # Copy the config and the binarie of Massa Node
-COPY --from=BuildTime /massa/massa-node/config/ ./source/massa-node/config/
-COPY --from=BuildTime /massa/massa-node/base_config/ ./source/massa-node/base_config/
-COPY --from=BuildTime /massa/target/release/massa-node ./source/massa-node
+COPY --from=BuildTime /massa/massa-node/config/ /massa_exec_files/massa-node/config/
+COPY --from=BuildTime /massa/massa-node/base_config/ /massa_exec_files/massa-node/base_config/
+COPY --from=BuildTime /massa/target/release/massa-node /massa_exec_files/massa-node
+
+RUN chown -R ${USER}:${USER} /massa_exec_files/*
 
 # Expose ports used by Massa
 EXPOSE 31244 31245 33034 33035
+
+# Move to the directory massa
+WORKDIR /massa_exec_files/massa-node
+
+# Run the node
+#CMD ["/bin/sh", "./massa_exec_files/massa-node/massa-node -p ${PSWD_NODE} |& tee logs.txt"]
+
+CMD ./massa-node -p ${PSWD_NODE} |& tee logs.txt
+
+#ENTRYPOINT ["/bin/sh" "-c" "./massa_exec_files/massa-node/massa-node -p ${PSWD_NODE} |& tee logs.txt"]
