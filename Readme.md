@@ -4,10 +4,12 @@
 ---
 ### Environment variables
 You have to **_create_** your own .env file.
-Then you can put the following content in your .env file :
+You can **_put_** the following content in your _.env_ file by **_replacing_** with your informations :
 ```sh
-    user="user"
-    user_pswd="user"
+    TAG=v1
+    BUILD_USER=<your_massa_user>
+    USER_PSWD=<your_massa_user_password>
+    NODE_PSWD=<your_massa_node_password>
 ```
 ---
 ### Launch the docker-compose
@@ -16,6 +18,7 @@ On a **_first terminal window_**, let's launch our **_P.O.C_** with the line bel
     docker-compose up --build
 ```
 ---
+## Optional part
 ### Acces to the container environment
 * On a **_second terminal window_**, launch the following command :
 ```sh
