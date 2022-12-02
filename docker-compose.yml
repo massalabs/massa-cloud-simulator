@@ -2,30 +2,52 @@ version: "3.3"
 services:
   poc-testnet-node-1:
     container_name: poc-testnet-1
-    env_file: .env
     build:
       context: .
       dockerfile: ./Dockerfile
+      args:
+        BUILD_USER: ${BUILD_USER}
+        USER_PSWD: ${USER_PSWD}
+        NODE_PSWD: ${NODE_PSWD}
     image: massa/poc-testnet:${TAG}
-    user: ${user}
-    #restart: always
+    user: ${BUILD_USER}
     ports:
-      - "33034:33034"
-      #- "33034:53034"
-      #- "33035:53035"
-    command: "python3 -m http.server 8000"
-
+      - target: 33034 #inside the ctr
+        published: 33034 #port exposed
+        protocol: tcp
+        mode: host
+      - target: 34035
+        published: 33035
+        protocol: tcp
+        mode: host
+    command: "./massa-node -p ${NODE_PSWD}"
+    networks:
+      - massa_cloud_network
+  
   poc-testnet-node-2:
     container_name: poc-testnet-2
-    env_file: .env
     build:
       context: .
       dockerfile: ./Dockerfile
+      args:
+        BUILD_USER: ${BUILD_USER}
+        USER_PSWD: ${USER_PSWD}
+        NODE_PSWD: ${NODE_PSWD}
     image: massa/poc-testnet:${TAG}
-    user: ${user}
-    command: "python3 -m http.server 8000"
-    #restart: always
+    user: ${BUILD_USER}
+    command: "./massa-node -p ${NODE_PSWD}"
     ports:
-      - "33035:33035"
-      #- "33034:43034"
-      #- "33035:43035"
+      - target: 33035
+        published: 34035
+        protocol: tcp
+        mode: host
+      - target: 33034
+        published: 34034
+        protocol: tcp
+        mode: host
+    networks:
+      - massa_cloud_network
+
+networks:
+  massa_cloud_network:
+    name: custom_network
