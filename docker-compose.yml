@@ -11,19 +11,20 @@ services:
         NODE_PSWD: ${NODE_PSWD}
     image: massa/poc-testnet:${TAG}
     user: ${BUILD_USER}
+    command: "./massa-node -p ${NODE_PSWD}"
     ports:
-      - target: 33034 #inside the ctr
-        published: 33034 #port exposed
+      - target: 33034 # Inside the container
+        published: 33034 # Exposed Port
         protocol: tcp
         mode: host
       - target: 34035
         published: 33035
         protocol: tcp
         mode: host
-    command: "./massa-node -p ${NODE_PSWD}"
     networks:
-      - massa_cloud_network
-  
+      massa_cloud_network:
+        ipv4_address: 172.16.254.5
+
   poc-testnet-node-2:
     container_name: poc-testnet-2
     build:
@@ -46,8 +47,15 @@ services:
         protocol: tcp
         mode: host
     networks:
-      - massa_cloud_network
+      massa_cloud_network:
+        ipv4_address: 172.16.254.6
+
 
 networks:
   massa_cloud_network:
-    name: custom_network
+    name: massa_cloud_network
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.16.254.0/16
+         gateway: 172.16.254.1
