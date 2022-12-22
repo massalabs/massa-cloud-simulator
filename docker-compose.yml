@@ -23,7 +23,7 @@ services:
         mode: host
     networks:
       massa_cloud_network:
-        ipv4_address: 172.16.254.5
+        ipv4_address: 10.0.0.11
 
   poc-testnet-node-2:
     container_name: poc-testnet-2
@@ -48,7 +48,7 @@ services:
         mode: host
     networks:
       massa_cloud_network:
-        ipv4_address: 172.16.254.6
+        ipv4_address: 10.0.0.12
 
 
 networks:
@@ -57,5 +57,5 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 172.16.254.0/16
-         gateway: 172.16.254.1
+       - subnet: 10.0.0.0/16
+         gateway: 10.0.0.254
