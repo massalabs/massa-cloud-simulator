@@ -116,8 +116,8 @@ RUN my_virtual_env/bin/python config.py /home/$BUILD_USER/massa_exec_files/massa
 RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
 
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
-COPY $INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
-COPY $INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
+COPY $INITIAL_LEDGER_FILE /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
+COPY $INITIAL_ROLLS_FILE /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
 
 # Expose ports used by Massa
 #EXPOSE 33034 33035 31244 31245
