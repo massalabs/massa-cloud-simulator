@@ -9,7 +9,13 @@ services:
         BUILD_USER: ${BUILD_USER}
         USER_PSWD: ${USER_PSWD}
         NODE_PSWD: ${NODE_PSWD}
-    image: massa/poc-testnet:${TAG}
+        BOOTSTRAP_IP: ""
+        BOOTSTRAP_PUBK: ""
+        NODE_PRIVKEY_FILE: config/node_privkey.key
+        INITIAL_LEDGER_FILE: config/initial_ledger.json
+        INITIAL_ROLLS_FILE: config/initial_rolls.json
+
+    image: massa_poc-testnet-1
     user: ${BUILD_USER}
     command: "./massa-node -p ${NODE_PSWD}"
     ports:
@@ -27,14 +33,19 @@ services:
 
   poc-testnet-node-2:
     container_name: poc-testnet-2
-    build:
+    build:  
       context: .
       dockerfile: ./Dockerfile
       args:
         BUILD_USER: ${BUILD_USER}
         USER_PSWD: ${USER_PSWD}
         NODE_PSWD: ${NODE_PSWD}
-    image: massa/poc-testnet:${TAG}
+        BOOTSTRAP_IP: ${NODE_IP_1}
+        BOOTSTRAP_PUBK: ${NODE_PUBK_1}
+        NODE_PRIVKEY_FILE: config/node_privkey_2.key
+        INITIAL_LEDGER_FILE: config/initial_ledger_2.json
+        INITIAL_ROLLS_FILE: config/initial_rolls_2.json
+    image: massa_poc-testnet-2
     user: ${BUILD_USER}
     command: "./massa-node -p ${NODE_PSWD}"
     ports:

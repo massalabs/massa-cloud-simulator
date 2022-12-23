@@ -36,7 +36,8 @@ class Config():
 
     def fill_bs_list(self):
         for i in range(2, self.len_args):
-            self.list_bs_node.append(self.args[i])
+            if self.args[i]:
+                self.list_bs_node.append(self.args[i])
         return self.list_bs_node
 
 
