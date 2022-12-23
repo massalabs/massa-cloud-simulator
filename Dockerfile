@@ -17,6 +17,7 @@ RUN apt-get install pkg-config \
                     git \
                     build-essential \
                     clang \
+                    python3-venv \
                     libclang-dev -y
 
 # Configure the path for rust
@@ -37,10 +38,26 @@ RUN useradd $BUILD_USER -m -u 1001
 # Set the username $USER and the password $USER_PSWD
 RUN echo "$BUILD_USER:$USER_PSWD" | chpasswd
 
-# Clone the repository
+# Clone the repository massa
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
-# Move to the directory massa
+# Move to massa-cloud-simulator directory
+WORKDIR /massa-cloud-simulator
+
+# Copy local files to container
+COPY requirements.txt /massa-cloud-simulator
+COPY config.py /massa-cloud-simulator
+
+# Create virtual env using python
+RUN python3 -m venv my_virtual_env
+
+# Install requirements using pip
+RUN my_virtual_env/bin/pip install -r requirements.txt
+
+# Update config.tolm file (to do : set ip and node ip in env)
+RUN my_virtual_env/bin/python config.py /massa/massa-node/base_config/config.toml 10.0.0.11 P12UbyLJDS7zimGWf3LTHe8hYY67RdLke1iDRZqJbQQLHQSKPW8j
+
+# Move to massa directory
 WORKDIR /massa
 
 # Build massa-node and the massa-client
