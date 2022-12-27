@@ -2,10 +2,6 @@
 # BuildTime Image
 FROM rustlang/rust:nightly AS BuildTime
 
-# Define env variables
-ARG BUILD_USER
-ARG USER_PWD
-
 # Update the machine
 RUN apt-get update -y
 
@@ -13,12 +9,7 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 
 # Install required packages
-RUN apt-get install pkg-config \
-                    git \
-                    build-essential \
-                    clang \
-                    python3-venv \
-                    libclang-dev -y
+RUN apt-get install pkg-config git build-essential clang libclang-dev -y
 
 # Configure the path for rust
 ENV PATH="/root/.cargo/bin:${PATH}"
@@ -32,15 +23,8 @@ RUN rustup default nightly-2022-11-14
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
 
-# Create the user $USER
-RUN useradd $BUILD_USER -m -u 1001
-
-# Set the username $USER and the password $USER_PWD
-RUN echo "$BUILD_USER:$USER_PWD" | chpasswd
-
 # Clone the repository massa
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
-
 
 # Move to massa directory
 WORKDIR /massa
