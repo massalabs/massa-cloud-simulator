@@ -4,7 +4,7 @@ FROM rustlang/rust:nightly AS BuildTime
 
 # Define env variables
 ARG BUILD_USER
-ARG USER_PSWD
+ARG USER_PWD
 
 # Update the machine
 RUN apt-get update -y
@@ -35,8 +35,8 @@ RUN apt-get clean -y
 # Create the user $USER
 RUN useradd $BUILD_USER -m -u 1001
 
-# Set the username $USER and the password $USER_PSWD
-RUN echo "$BUILD_USER:$USER_PSWD" | chpasswd
+# Set the username $USER and the password $USER_PWD
+RUN echo "$BUILD_USER:$USER_PWD" | chpasswd
 
 # Clone the repository massa
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
@@ -55,11 +55,10 @@ FROM debian:bullseye-slim AS runtime
 
 # Define env variables
 ARG BUILD_USER
-ARG USER_PSWD
-ARG NODE_PSWD
+ARG USER_PWD
 ARG NODE_PRIVKEY_FILE
-ARG INITIAL_LEDGER_FILE
-ARG INITIAL_ROLLS_FILE
+ARG NODE_CONFIG_INITIAL_LEDGER
+ARG NODE_CONFIG_INITIAL_ROLLS
 ARG BOOTSTRAP_IP
 ARG BOOTSTRAP_PUBK
 
@@ -79,7 +78,7 @@ RUN apt-get clean -y
 RUN useradd $BUILD_USER -m -u 1001
 
 # Set the username $USER and the password $USER
-RUN echo "$BUILD_USER:$USER_PSWD" | chpasswd
+RUN echo "$BUILD_USER:$USER_PWD" | chpasswd
 
 # Move to the directory massa_exec_files
 WORKDIR /home/$BUILD_USER/massa_exec_files
@@ -116,8 +115,8 @@ RUN my_virtual_env/bin/python config.py /home/$BUILD_USER/massa_exec_files/massa
 RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
 
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
-COPY $INITIAL_LEDGER_FILE /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
-COPY $INITIAL_ROLLS_FILE /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
+COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
+COPY $NODE_CONFIG_INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
 
 # Expose ports used by Massa
 #EXPOSE 33034 33035 31244 31245
