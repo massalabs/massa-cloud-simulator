@@ -1,5 +1,6 @@
-import os
 import sys
+import shutil
+from pathlib import Path
 
 # Third Part Library
 import tomli
@@ -17,21 +18,13 @@ class Config():
         self.list_bs_node = []
 
 
-    def print_args(self):
-        print("self.config_file =", self.config_file)
-        print("self.ip =", self.ip)
-        print("self.address =", self.address)
-
-
     def check_file(self):
-        if os.path.isfile(self.config_file) == False:
-            raise FileNotFoundError
-        if not os.access(self.config_file, os.R_OK):
-            print("ERROR: Cannot read the file %s", self.config_file, file=sys.stderr)
-            raise OSError
-        files_size = os.path.getsize(self.config_file)
-        if files_size <= 0:
-            raise FileNotFoundError
+        #home_path = Path.home() # Cannot do that -> venv get "/root" instead of "/home/user"
+        #configfile_path = Path(home_path, "massa_exec_files", "massa-node", "base_config", "config.toml") # same as above
+        configfile_path = Path("/", "home", "user", "massa_exec_files", "massa-node", "base_config", "config.toml")
+        if configfile_path.exists() == False:
+            print("ERROR : File '" + str(configfile_path) + "' not found", file=sys.stderr)
+            sys.exit(-1)
 
 
     def fill_bs_list(self):
@@ -42,12 +35,8 @@ class Config():
 
 
     def get_file_content(self):
-        try:
-            with open(self.config_file, "rb") as f:#rb for reading and binary
-                self.toml_dict = tomli.load(f)#load file as dict
-        except tomli.TOMLDecodeError:
-            print("ERROR: Invalid TOML file %s", self.config_file, file=sys.stderr)
-            sys.exit(-1)
+        with open(self.config_file, "rb") as f:#rb for reading and binary
+            self.toml_dict = tomli.load(f)#load file as dict
 
 
     def change_bs_sections(self):#update the section with right info
@@ -60,20 +49,14 @@ class Config():
 
 
     def gen_config_file(self):#generate a new config file
-        try:
-            #Rename the old config file
-            if os.path.exists(self.config_file):
-                os.rename(self.config_file, self.config_file + ".old")
-                new_config_file = self.config_file
-                self.config_file = self.config_file + ".old"
-            else:
-                raise OSError
-            #Write new content in a new file
-            with open(new_config_file, "wb") as f:
-                tomli_w.dump(self.toml_dict, f)
-        except tomli.TOMLDecodeError:
-            print("ERROR: Cannot generate a new file", file=sys.stderr)
-            sys.exit(-1)
+        #Rename the old config file
+        shutil.copy(self.config_file, self.config_file + ".old")
+        new_config_file = self.config_file
+        self.config_file = self.config_file + ".old"
+        #Write new content in a new file
+        with open(new_config_file, "wb") as f:
+            tomli_w.dump(self.toml_dict, f)
+
 
 
 def usage(status):
@@ -84,36 +67,34 @@ def usage(status):
         "\tip\t\tip of the node for the bootstrap\n"
         "\taddress\t\twallet address"
     )
-    if status == True:
-        sys.exit(0)
-    elif status == False:
-        sys.exit(-1)
 
 
 def main(argv):
     try:
-        cfg = Config(argv)
         if len(argv) == 2 and argv[1] == "--help":
-            usage(True)
+            usage()
+            sys.exit(0)
         elif len(argv) != 4:
-            raise TypeError
+            usage()
+            sys.exit(-1)
+        cfg = Config(argv)
         cfg.check_file()
-        #cfg.print_args()
         cfg.get_file_content()
         cfg.change_bs_sections()
         cfg.gen_config_file()
     except FileNotFoundError:
-        print("ERROR : File '" + str(argv[1]) + "' not found or is empty", file=sys.stderr)
+        print("ERROR : File '" + str(argv[1]) + "' not found", file=sys.stderr)
         sys.exit(-1)
     except IOError:
         print("ERROR: IO Error", file=sys.stderr)
         sys.exit(-1)
-    except OSError:
-        print("ERROR: OS Error", file=sys.stderr)
-        sys.exit(-1)
     except TypeError:
         print("ERROR: Invalid number of arguments. See the usage bellow.\n", file=sys.stderr)
-        usage(False)
+        usage()
+        sys.exit(-1)
+    except tomli.TOMLDecodeError:
+        print("ERROR: Cannot generate a new file or invalid TOML file", file=sys.stderr)
+        sys.exit(-1)
 
 
 if __name__ == "__main__":

@@ -86,13 +86,13 @@ COPY requirements.txt /massa-cloud-simulator
 COPY config.py /massa-cloud-simulator
 
 # Create virtual env using python
-RUN python3 -m venv my_virtual_env
+RUN python3 -m venv venv
 
 # Install requirements using pip
-RUN my_virtual_env/bin/pip install -r requirements.txt
+RUN venv/bin/pip install -r requirements.txt
 
 # Update config.tolm file
-RUN my_virtual_env/bin/python config.py /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml "$BOOTSTRAP_IP" "$BOOTSTRAP_PUBK"
+RUN venv/bin/python config.py /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml "$BOOTSTRAP_IP" "$BOOTSTRAP_PUBK"
 
 
 # Change the permission of the folder
