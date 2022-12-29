@@ -14,7 +14,6 @@ services:
         NODE_PRIVKEY_FILE: config/node_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
-
     image: massa_poc-testnet-1
     user: ${BUILD_USER}
     command: "./massa-node -p ${NODE_WALLET_PWD}"
