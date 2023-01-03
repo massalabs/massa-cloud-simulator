@@ -2,8 +2,9 @@
 
 .PHONY: build
 build:
-	docker-compose up --build
-#	docker-compose -f docker-compose.yml build --force-rm --parallel
+	python3 generate_ts.py
+	docker-compose build
+	docker-compose up
 
 ############################################ CLEAR ############################################
 
