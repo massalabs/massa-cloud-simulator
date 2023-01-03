@@ -7,70 +7,58 @@ import argparse
 import tomli
 import tomli_w
 
-class Config():
-    def __init__(self, argv, args_list):
-        self.len_args = len(argv)
-        self.args = argv
-        self.config_file = args_list[0]
-        self.ip = args_list[1]
-        self.address = args_list[2]
-        self.toml_dict = {}
-        self.bs_list_section_dict = {}
-        self.list_bs_node = []
 
+class Config:
+    def __init__(self, config_file, ip, port, address):
+        self.config_file = Path(args.config_file)
+        self.ip = args.ip
+        self.port = args.port
+        self.address = args.address
+        self.toml_dict = {}
 
     def check_file(self):
-        #home_path = Path.home() # Cannot do that -> venv get "/root" instead of "/home/user"
-        #configfile_path = Path(home_path, "massa_exec_files", "massa-node", "base_config", "config.toml") # same as above
-        configfile_path = Path("/", "home", "user", "massa_exec_files", "massa-node", "base_config", "config.toml")
-        if configfile_path.exists() == False:
-            print("ERROR : File '" + str(configfile_path) + "' not found", file=sys.stderr)
-            sys.exit(2)
-
-
-    def fill_bs_list(self):
-        for i in range(2, self.len_args):
-            if self.args[i]:
-                if i == 2:
-                    self.list_bs_node.append(self.args[i] + ":31245")
-                else:
-                    self.list_bs_node.append(self.args[i])
-        return self.list_bs_node
-
+        if self.config_file.exists() is False:
+            raise FileNotFoundError
 
     def get_file_content(self):
-        with open(self.config_file, "rb") as f:#rb for reading and binary
-            self.toml_dict = tomli.load(f)#load file as dict
+        with open(self.config_file, "rb") as f:  # rb for reading and binary
+            self.toml_dict = tomli.load(f)  # load file as dict
 
+    def change_bs_sections(self):  # update the section with right info
+        change_bs_sections = self.toml_dict["bootstrap"][
+            "bootstrap_list"
+        ]  # get the section "bootstrap_list" into section "bootstrap"
+        change_bs_sections.append(
+            [f"{self.ip}:{self.port}", self.address]
+        )  # fill the section
 
-    def change_bs_sections(self):#update the section with right info
-        change_bs_sections = self.toml_dict["bootstrap"]["bootstrap_list"]#get the section "bootstrap_list" into section "bootstrap"
-        change_bs_sections.clear()#clear the section
-        change_bs_sections.append(self.fill_bs_list())#fill the section
-        #toml_dict_json = json.dumps(self.toml_dict, indent=4)#json format
-        #print(self.toml_dict)
-        #print(toml_dict_json)
+    def clear_bs_sections(self):
+        self.toml_dict["bootstrap"]["bootstrap_list"].clear()
 
+    def empty_bs_whitelist(self):
+        self.toml_dict["bootstrap"]["bootstrap_whitelist_path"] = ""
 
-    def gen_config_file(self):#generate a new config file
-        #Rename the old config file
-        shutil.copy(self.config_file, self.config_file + ".old")
-        new_config_file = self.config_file
-        self.config_file = self.config_file + ".old"
-        #Write new content in a new file
-        with open(new_config_file, "wb") as f:
+    def gen_config_file(self):  # generate a new config file
+        shutil.copy(
+            self.config_file, str(self.config_file) + ".old"
+        )  # Rename the old config file
+        with open(self.config_file, "wb") as f:  # Write new content in a new file
             tomli_w.dump(self.toml_dict, f)
 
 
-def main(argv, args_list):
+def main(args):
     try:
-        cfg = Config(argv, args_list)
+        cfg = Config(args.config_file, args.ip, args.port, args.address)
         cfg.check_file()
         cfg.get_file_content()
-        cfg.change_bs_sections()
+        cfg.clear_bs_sections()
+        if args.ip != "" and args.address != "":
+            cfg.change_bs_sections()
+        if args.empty_bootstrap_whitelist_path:
+            cfg.empty_bs_whitelist()
         cfg.gen_config_file()
     except FileNotFoundError:
-        print("ERROR : File '" + str(argv[1]) + "' not found", file=sys.stderr)
+        print("ERROR : File '" + str(args.config_file) + "' not found", file=sys.stderr)
         sys.exit(2)
     except IOError:
         print("ERROR: IO Error", file=sys.stderr)
@@ -81,13 +69,11 @@ def main(argv, args_list):
 
 
 if __name__ == "__main__":
-    config_file = ""
-    ip = ""
-    address = ""
     parser = argparse.ArgumentParser()
-    parser.add_argument("config_file", help="configuration file in TOML format")
-    parser.add_argument("ip", help="ip of the node for the bootstrap")
-    parser.add_argument("address", help="wallet address")
+    parser.add_argument("-c", "--config_file", help="configuration file in TOML format")
+    parser.add_argument("-i", "--ip", help="ip of the node for the bootstrap")
+    parser.add_argument("-a", "--address", help="wallet address")
+    parser.add_argument("-p", "--port", help="port of the node for the bootstrap", default=31245, type=int, required=False)
+    parser.add_argument("-e", "--empty_bootstrap_whitelist_path", help="Boolean to make the whitelist empty or not", action="store_true")
     args = parser.parse_args()
-    args_list = [args.config_file, args.ip, args.address]
-    main(sys.argv, args_list)
+    main(args)
