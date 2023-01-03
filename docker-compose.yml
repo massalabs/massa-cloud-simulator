@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 services:
   node_1:
     container_name: node_1_container
@@ -14,7 +14,9 @@ services:
         NODE_PRIVKEY_FILE: config/node_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
-    image: massa_poc-testnet-1
+    environment:
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+    image: node_1_image
     user: ${BUILD_USER}
     command: "./massa-node -p ${NODE_WALLET_PWD}"
     ports:
@@ -42,11 +44,15 @@ services:
         BOOTSTRAP_IP: ${NODE_IP_1}
         BOOTSTRAP_PUBK: ${NODE_PUBK_1}
         NODE_PRIVKEY_FILE: config/node_privkey_2.key
-        NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger_2.json
-        NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls_2.json
-    image: massa_poc-testnet-2
+        NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
+        NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
+    environment:
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+    image: node_2_image
     user: ${BUILD_USER}
-    command: "./massa-node -p ${NODE_WALLET_PWD}"
+    depends_on:
+      - node_1
+    command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     ports:
       - target: 33035
         published: 34035
