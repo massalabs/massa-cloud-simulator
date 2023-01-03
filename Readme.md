@@ -2,7 +2,7 @@
 ### Pre-requisites
 - Make sur you have [Docker]("https://www.docker.com/") installed and running on your computer, however you can find informations about how to install Docker [here]("https://docs.docker.com/get-docker/").
 ---
-### Environment variables
+## Environment variables
 
 You have to **_edit_** the `env.sample` file by **_replacing_** the content in order to use your own configuration.
 
@@ -11,16 +11,16 @@ After that, let's **_copy_** the `env.sample` file to a new file `.env` using th
     cp -v env.sample .env
 ```
 ---
-### Launch the docker-compose
-We can launch our **_P.O.C_** with the line bellow :
+## Launch the Cloud Simulator
+
+We can launch the **_simulator_** with the line bellow :
 ```sh
-    docker-compose up --build
+    ./launch.sh
 ```
-
 ---
+## Optional part (Good to know)
 
-## Optional part
-### Acces to the container **environment**
+### Acces to the container **environment** while running
 ```sh
     docker exec -it [container_name] bash
 ```
