@@ -30,7 +30,7 @@ RUN git clone --branch testnet https://github.com/massalabs/massa.git
 WORKDIR /massa
 
 # Build massa-node and the massa-client
-RUN cargo build --release --bin massa-node --bin massa-client 
+RUN cargo build --release --bin massa-node --bin massa-client --features sandbox
 
 
 ############# RUNTIME #############
@@ -92,7 +92,7 @@ RUN python3 -m venv venv
 RUN venv/bin/pip install -r requirements.txt
 
 # Update config.tolm file
-RUN venv/bin/python config.py /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml "$BOOTSTRAP_IP" "$BOOTSTRAP_PUBK"
+RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK"
 
 
 # Change the permission of the folder
@@ -101,6 +101,7 @@ RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
 COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
 COPY $NODE_CONFIG_INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
+COPY wait_ts.sh /home/$BUILD_USER/massa_exec_files/massa-node
 
 # Expose ports used by Massa
 #EXPOSE 33034 33035 31244 31245
