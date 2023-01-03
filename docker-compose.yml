@@ -11,7 +11,7 @@ services:
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
         BOOTSTRAP_IP: ""
         BOOTSTRAP_PUBK: ""
-        NODE_PRIVKEY_FILE: config/node_privkey.key
+        NODE_PRIVKEY_FILE: config/node_1_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
     environment:
@@ -41,9 +41,9 @@ services:
         BUILD_USER: ${BUILD_USER}
         USER_PWD: ${USER_PWD}
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
-        BOOTSTRAP_IP: ${NODE_IP_1}
-        BOOTSTRAP_PUBK: ${NODE_PUBK_1}
-        NODE_PRIVKEY_FILE: config/node_privkey_2.key
+        BOOTSTRAP_IP: ${NODE_1_IP}
+        BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
+        NODE_PRIVKEY_FILE: config/node_2_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
     environment:
