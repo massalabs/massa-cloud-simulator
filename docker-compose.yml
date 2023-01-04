@@ -1,0 +1,77 @@
+version: "3.8"
+services:
+  node_1:
+    container_name: node_1_container
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_USER: ${BUILD_USER}
+        USER_PWD: ${USER_PWD}
+        NODE_WALLET_PWD: ${NODE_WALLET_PWD}
+        BOOTSTRAP_IP: ""
+        BOOTSTRAP_PUBK: ""
+        NODE_PRIVKEY_FILE: config/node_1_privkey.key
+        NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
+        NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
+    environment:
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+    image: node_1_image
+    user: ${BUILD_USER}
+    command: "./massa-node -p ${NODE_WALLET_PWD}"
+    ports:
+      - target: 33034 # Inside the container
+        published: 33034 # Exposed Port
+        protocol: tcp
+        mode: host
+      - target: 34035
+        published: 33035
+        protocol: tcp
+        mode: host
+    networks:
+      massa_cloud_network:
+        ipv4_address: 10.0.0.11
+
+  node_2:
+    container_name: node_2_container
+    build:  
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_USER: ${BUILD_USER}
+        USER_PWD: ${USER_PWD}
+        NODE_WALLET_PWD: ${NODE_WALLET_PWD}
+        BOOTSTRAP_IP: ${NODE_1_IP}
+        BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
+        NODE_PRIVKEY_FILE: config/node_2_privkey.key
+        NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
+        NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
+    environment:
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+    image: node_2_image
+    user: ${BUILD_USER}
+    depends_on:
+      - node_1
+    command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
+    ports:
+      - target: 33035
+        published: 34035
+        protocol: tcp
+        mode: host
+      - target: 33034
+        published: 34034
+        protocol: tcp
+        mode: host
+    networks:
+      massa_cloud_network:
+        ipv4_address: 10.0.0.12
+
+
+networks:
+  massa_cloud_network:
+    name: massa_cloud_network
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.0.0.0/16
+         gateway: 10.0.0.254
