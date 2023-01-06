@@ -91,6 +91,9 @@ WORKDIR /home/$BUILD_USER/massa_exec_files/massa-node/
 COPY requirements.txt .
 COPY config.py .
 
+# # Change the permission of the folder
+# RUN chown -R $BUILD_USER:$BUILD_USER /massa-cloud-simulator/*
+
 # Create virtual env using python
 RUN python3 -m venv venv
 
