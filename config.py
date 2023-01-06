@@ -2,6 +2,7 @@ import sys
 import shutil
 from pathlib import Path
 import argparse
+import os
 
 # Third Part Library
 import tomli
@@ -9,11 +10,12 @@ import tomli_w
 
 
 class Config:
-    def __init__(self, config_file, ip, port, address):
+    def __init__(self, config_file, ip, port, address, node_ip):
         self.config_file = Path(args.config_file)
         self.ip = args.ip
         self.port = args.port
         self.address = args.address
+        self.node_ip = args.node_ip
         self.toml_dict = {}
 
     def check_file(self):
@@ -33,7 +35,10 @@ class Config:
         )  # fill the section
 
     def change_bind_private_ip(self):
-        self.toml_dict["api"]["bind_private"]= "0.0.0.0:33034"
+        self.toml_dict["api"]["bind_private"] = "0.0.0.0:33034"
+
+    def change_routable_ip(self):
+        self.toml_dict["network"]["routable_ip"] = self.node_ip
 
     def clear_bs_sections(self):
         self.toml_dict["bootstrap"]["bootstrap_list"].clear()
@@ -51,7 +56,7 @@ class Config:
 
 def main(args):
     try:
-        cfg = Config(args.config_file, args.ip, args.port, args.address)
+        cfg = Config(args.config_file, args.ip, args.port, args.address, args.node_ip)
         cfg.check_file()
         cfg.get_file_content()
         cfg.clear_bs_sections()
@@ -60,6 +65,7 @@ def main(args):
         if args.empty_bootstrap_whitelist_path:
             cfg.empty_bs_whitelist()
         cfg.change_bind_private_ip()
+        cfg.change_routable_ip()
         cfg.gen_config_file()
     except FileNotFoundError:
         print("ERROR : File '" + str(args.config_file) + "' not found", file=sys.stderr)
@@ -77,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--config_file", help="configuration file in TOML format")
     parser.add_argument("-i", "--ip", help="ip of the node for the bootstrap")
     parser.add_argument("-a", "--address", help="wallet address")
+    parser.add_argument("-n", "--node_ip", help="ip of the node")
     parser.add_argument("-p", "--port", help="port of the node for the bootstrap", default=31245, type=int, required=False)
     parser.add_argument("-e", "--empty_bootstrap_whitelist_path", help="Boolean to make the whitelist empty or not", action="store_true")
     args = parser.parse_args()
