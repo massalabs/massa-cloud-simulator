@@ -24,7 +24,7 @@ services:
         published: 33034 # Exposed Port
         protocol: tcp
         mode: host
-      - target: 34035
+      - target: 33035
         published: 33035
         protocol: tcp
         mode: host
@@ -54,12 +54,12 @@ services:
       - node_1
     command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     ports:
-      - target: 33035
-        published: 34035
-        protocol: tcp
-        mode: host
       - target: 33034
         published: 34034
+        protocol: tcp
+        mode: host
+      - target: 33035
+        published: 34035
         protocol: tcp
         mode: host
     networks:

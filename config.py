@@ -32,6 +32,9 @@ class Config:
             [f"{self.ip}:{self.port}", self.address]
         )  # fill the section
 
+    def change_bind_private_ip(self):
+        self.toml_dict["api"]["bind_private"]= "0.0.0.0:33034"
+
     def clear_bs_sections(self):
         self.toml_dict["bootstrap"]["bootstrap_list"].clear()
 
@@ -56,6 +59,7 @@ def main(args):
             cfg.change_bs_sections()
         if args.empty_bootstrap_whitelist_path:
             cfg.empty_bs_whitelist()
+        cfg.change_bind_private_ip()
         cfg.gen_config_file()
     except FileNotFoundError:
         print("ERROR : File '" + str(args.config_file) + "' not found", file=sys.stderr)

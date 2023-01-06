@@ -53,7 +53,7 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 
 # Install required packages
-RUN apt-get install python3-venv -y
+RUN apt-get install python3-venv procps nano curl -y
 
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
@@ -102,6 +102,12 @@ COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/nod
 COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
 COPY $NODE_CONFIG_INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
 COPY wait_ts.sh /home/$BUILD_USER/massa_exec_files/massa-node
+RUN rm -v /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_peers.json
+RUN echo "[]" >> /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_peers.json
+
+COPY test_1.py /home/$BUILD_USER/massa_exec_files/massa-node
+COPY env_test.sh /home/$BUILD_USER/massa_exec_files/massa-node
+
 
 # Expose ports used by Massa
 #EXPOSE 33034 33035 31244 31245
