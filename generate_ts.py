@@ -10,22 +10,26 @@ class Info:
     file_content: list[str] = []
 
 
-def get_current_timestamp(genesis_timestamp_delay):
+def get_current_timestamp(genesis_timestamp_delay) -> str:
     current_date = datetime.datetime.now()
     current_ts = current_date + datetime.timedelta(seconds=genesis_timestamp_delay)
     current_ts = round(current_ts.timestamp()) * 1000
+    #return ici et formate dans get_content_file
     current_ts = '"' + str(current_ts) + '"'
     return current_ts
 
 
-def get_content_file(info, genesis_timestamp_delay):
+def get_content_file(info, genesis_timestamp_delay) -> str:
+    genesis_ts = ""
     with open(info.env_file, "r") as f:
         info.file_content = f.readlines()
         info.len_content = len(info.file_content)
         for i in range(len(info.file_content)):
             if "GENESIS_TIMESTAMP=" in info.file_content[i]:
-                info.file_content[i] = "GENESIS_TIMESTAMP=" + get_current_timestamp(genesis_timestamp_delay)
+                genesis_ts = str(get_current_timestamp(genesis_timestamp_delay))
+                info.file_content[i] = "GENESIS_TIMESTAMP=" + genesis_ts
         f.close()
+    return genesis_ts
 
 
 def gen_new_env(info):
@@ -36,9 +40,11 @@ def gen_new_env(info):
 
 
 def main(args):
-    info = Info()
     try:
-        get_content_file(info, args.genesis_timestamp_delay)
+        info = Info()
+        genesis_ts = get_content_file(info, args.genesis_timestamp_delay)
+        #convert timestamp to date and print it
+        print("genesis_timestamp = " + genesis_ts)
         shutil.copy(info.env_file, info.env_file + ".old")
         gen_new_env(info)
     except IOError:
