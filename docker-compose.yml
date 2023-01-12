@@ -42,7 +42,7 @@ services:
         BUILD_USER: ${BUILD_USER}
         USER_PWD: ${USER_PWD}
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
-        BOOTSTRAP_IP: ${NODE_1_IP}
+        BOOTSTRAP_IP: ${NODE_2_IP}
         BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
         NODE_IP: ${NODE_2_IP}
         NODE_PRIVKEY_FILE: config/node_2_privkey.key
@@ -56,11 +56,11 @@ services:
       - node_1
     command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     ports:
-      - target: 33034
+      - target: 33034 # Private Port
         published: 34034
         protocol: tcp
         mode: host
-      - target: 33035
+      - target: 33035 # Public Port
         published: 34035
         protocol: tcp
         mode: host
