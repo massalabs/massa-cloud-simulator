@@ -21,11 +21,11 @@ services:
     user: ${BUILD_USER}
     command: "./massa-node -p ${NODE_WALLET_PWD}"
     ports:
-      - target: 33034 # Inside the container
-        published: 33034 # Exposed Port
+      - target: 33034 # Private Port (target -> Inside the container)
+        published: 33034 # (published -> Exposed Port)
         protocol: tcp
         mode: host
-      - target: 33035
+      - target: 33035 # Public Port
         published: 33035
         protocol: tcp
         mode: host
