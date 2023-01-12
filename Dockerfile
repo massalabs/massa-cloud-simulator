@@ -45,7 +45,6 @@ ARG NODE_CONFIG_INITIAL_LEDGER
 ARG NODE_CONFIG_INITIAL_ROLLS
 ARG BOOTSTRAP_IP
 ARG BOOTSTRAP_PUBK
-ARG NODE_IP
 
 # Update the machine
 RUN apt-get update -y
@@ -91,9 +90,6 @@ WORKDIR /home/$BUILD_USER/massa_exec_files/massa-node/
 COPY requirements.txt .
 COPY config.py .
 
-# # Change the permission of the folder
-# RUN chown -R $BUILD_USER:$BUILD_USER /massa-cloud-simulator/*
-
 # Create virtual env using python
 RUN python3 -m venv venv
 
@@ -101,7 +97,8 @@ RUN python3 -m venv venv
 RUN venv/bin/pip install -r requirements.txt
 
 # Update config.tolm file
-RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK" -n "$NODE_IP"
+RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK"
+
 
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
 COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json

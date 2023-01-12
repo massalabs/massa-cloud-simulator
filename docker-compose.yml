@@ -11,7 +11,6 @@ services:
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
         BOOTSTRAP_IP: ""
         BOOTSTRAP_PUBK: ""
-        NODE_IP: ${NODE_1_IP}
         NODE_PRIVKEY_FILE: config/node_1_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
@@ -45,7 +44,6 @@ services:
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
         BOOTSTRAP_IP: ${NODE_1_IP}
         BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
-        NODE_IP: ${NODE_2_IP}
         NODE_PRIVKEY_FILE: config/node_2_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
@@ -63,6 +61,10 @@ services:
         mode: host
       - target: 33035 # Public Port
         published: 34035
+        protocol: tcp
+        mode: host
+      - target: 33034
+        published: 34034
         protocol: tcp
         mode: host
     networks:

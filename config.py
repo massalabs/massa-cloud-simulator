@@ -2,7 +2,6 @@ import sys
 import shutil
 from pathlib import Path
 import argparse
-import os
 
 # Third Part Library
 import tomli
@@ -66,8 +65,6 @@ def main(args):
             cfg.change_bs_sections()
         if args.empty_bootstrap_whitelist_path:
             cfg.empty_bs_whitelist()
-        cfg.change_bind_private_ip()
-        cfg.change_routable_ip()
         cfg.gen_config_file()
     except FileNotFoundError:
         print("ERROR : File '" + str(args.config_file) + "' not found", file=sys.stderr)
