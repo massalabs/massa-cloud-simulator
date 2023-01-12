@@ -54,7 +54,9 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 
 # Install required packages
-RUN apt-get install python3-venv procps nano curl -y
+RUN apt-get install python3-venv \
+                    procps nano curl -y
+                    # procps, nano and curl are used for debugging inside the container
 
 # Clears out the local repository of retrieved package files
 RUN apt-get clean -y
@@ -79,15 +81,15 @@ COPY --from=BuildTime /massa/massa-node/base_config/ /home/$BUILD_USER/massa_exe
 COPY --from=BuildTime /massa/target/release/massa-node /home/$BUILD_USER/massa_exec_files/massa-node
 COPY --from=BuildTime /massa/massa-node/base_config/config.toml /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml
 
-# Move to massa-cloud-simulator directory
-WORKDIR /massa-cloud-simulator
+# Change the permission of the folder
+RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
+
+# Move to the directory massa_exec_files
+WORKDIR /home/$BUILD_USER/massa_exec_files/massa-node/
 
 # Copy local files to container
-COPY requirements.txt /massa-cloud-simulator
-COPY config.py /massa-cloud-simulator
-
-# # Change the permission of the folder
-# RUN chown -R $BUILD_USER:$BUILD_USER /massa-cloud-simulator/*
+COPY requirements.txt .
+COPY config.py .
 
 # Create virtual env using python
 RUN python3 -m venv venv
@@ -98,22 +100,10 @@ RUN venv/bin/pip install -r requirements.txt
 # Update config.tolm file
 RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK" -n "$NODE_IP"
 
-# Change the permission of the folder
-RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
-
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
 COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
 COPY $NODE_CONFIG_INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
 COPY wait_ts.sh /home/$BUILD_USER/massa_exec_files/massa-node
+
 RUN rm -v /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_peers.json
 RUN echo "[]" >> /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_peers.json
-
-COPY test_1.py /home/$BUILD_USER/massa_exec_files/massa-node
-COPY env_test.sh /home/$BUILD_USER/massa_exec_files/massa-node
-
-
-# Expose ports used by Massa
-#EXPOSE 33034 33035 31244 31245
-
-# Move to the directory massa_exec_files
-WORKDIR /home/$BUILD_USER/massa_exec_files/massa-node/
