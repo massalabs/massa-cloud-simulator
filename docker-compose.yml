@@ -63,10 +63,6 @@ services:
         published: 34035
         protocol: tcp
         mode: host
-      - target: 33034
-        published: 34034
-        protocol: tcp
-        mode: host
     networks:
       massa_cloud_network:
         ipv4_address: 11.0.0.12
