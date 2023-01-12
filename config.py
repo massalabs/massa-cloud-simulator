@@ -10,13 +10,14 @@ import tomli_w
 
 
 class Config:
-    def __init__(self, config_file, ip, port, address, node_ip, bind_private_ip):
+    def __init__(self, config_file, ip, port, address, node_ip, bind_private_ip, bind_private_port):
         self.config_file = Path(args.config_file)
         self.ip = args.ip
         self.port = args.port
         self.address = args.address
         self.node_ip = args.node_ip
         self.bind_private_ip = bind_private_ip
+        self.bind_private_port = bind_private_port
         self.toml_dict = {}
 
     def check_file(self):
@@ -36,7 +37,7 @@ class Config:
         )  # fill the section
 
     def change_bind_private_ip(self):
-        self.toml_dict["api"]["bind_private"] = f"{self.bind_private_ip}:33034"
+        self.toml_dict["api"]["bind_private"] = f"{self.bind_private_ip}:{self.bind_private_port}"
 
     def change_routable_ip(self):
         self.toml_dict["network"]["routable_ip"] = self.node_ip
@@ -57,7 +58,7 @@ class Config:
 
 def main(args):
     try:
-        cfg = Config(args.config_file, args.ip, args.port, args.address, args.node_ip, args.bind_private_ip)
+        cfg = Config(args.config_file, args.ip, args.port, args.address, args.node_ip, args.bind_private_ip, args.bind_private_port)
         cfg.check_file()
         cfg.get_file_content()
         cfg.clear_bs_sections()
@@ -86,7 +87,8 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--address", help="wallet address for bootstrapping")
     parser.add_argument("-n", "--node_ip", help="ip of the node to establish connections between nodes")
     parser.add_argument("-p", "--port", help="port of the node for the bootstrap", default=31245, type=int, required=False)
-    parser.add_argument("-b", "--bind_private_ip", help="private ip address to listen from", default="0.0.0.0", type=str, required=False)
+    parser.add_argument("-bi", "--bind_private_ip", help="private ip address to listen from", default="0.0.0.0", type=str, required=False)
+    parser.add_argument("-bp", "--bind_private_port", help="private port to listen from", default=33034, type=int, required=False)
     parser.add_argument("-e", "--empty_bootstrap_whitelist_path", help="Boolean to make the whitelist empty or not", action="store_true")
     args = parser.parse_args()
     main(args)
