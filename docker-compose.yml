@@ -11,26 +11,28 @@ services:
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
         BOOTSTRAP_IP: ""
         BOOTSTRAP_PUBK: ""
+        NODE_IP: ${NODE_1_IP}
         NODE_PRIVKEY_FILE: config/node_1_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
     environment:
       - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+      #- RUST_BACKTRACE=full (Debugging)
     image: node_1_image
     user: ${BUILD_USER}
     command: "./massa-node -p ${NODE_WALLET_PWD}"
     ports:
-      - target: 33034 # Inside the container
-        published: 33034 # Exposed Port
+      - target: 33034 # Private Port (target -> Inside the container)
+        published: 33034 # (published -> Exposed Port)
         protocol: tcp
         mode: host
-      - target: 34035
+      - target: 33035 # Public Port
         published: 33035
         protocol: tcp
         mode: host
     networks:
       massa_cloud_network:
-        ipv4_address: 10.0.0.11
+        ipv4_address: 11.0.0.11
 
   node_2:
     container_name: node_2_container
@@ -43,6 +45,7 @@ services:
         NODE_WALLET_PWD: ${NODE_WALLET_PWD}
         BOOTSTRAP_IP: ${NODE_1_IP}
         BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
+        NODE_IP: ${NODE_2_IP}
         NODE_PRIVKEY_FILE: config/node_2_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
@@ -54,17 +57,17 @@ services:
       - node_1
     command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     ports:
-      - target: 33035
-        published: 34035
+      - target: 33034 # Private Port
+        published: 34034
         protocol: tcp
         mode: host
-      - target: 33034
-        published: 34034
+      - target: 33035 # Public Port
+        published: 34035
         protocol: tcp
         mode: host
     networks:
       massa_cloud_network:
-        ipv4_address: 10.0.0.12
+        ipv4_address: 11.0.0.12
 
 
 networks:
@@ -73,5 +76,5 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 10.0.0.0/16
-         gateway: 10.0.0.254
+       - subnet: 11.0.0.0/16
+         gateway: 11.0.0.254
