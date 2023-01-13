@@ -1,6 +1,9 @@
 # Massa cloud simulator
 ### Pre-requisites
 - Make sur you have [Docker]("https://www.docker.com/") installed and running on your computer, however you can find informations about how to install Docker [here]("https://docs.docker.com/get-docker/").
+
+- You also need to have [Python3]("https://www.python.org/download/releases/3.0/") installed on your device in order to launch the simulator, you can download it [here]("https://www.python.org/downloads/").
+
 ---
 ## Environment variables
 
