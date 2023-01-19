@@ -47,34 +47,30 @@ class TestStringMethods(unittest.TestCase):
         self.api_data = Api()
 
     def test_status_nodes(self):
-        # test_node_1_ban_count
+        # Test node_1_ban_count
         ban_count_1 = self.api_data.status_content_1["result"]["network_stats"]["banned_peer_count"]
         self.assertEqual(ban_count_1, 0)
-        # test_node_2_ban_count
+        # Test node_2_ban_count
         ban_count_2 = self.api_data.status_content_2["result"]["network_stats"]["banned_peer_count"]
         self.assertEqual(ban_count_2, 0)
-        # test_node_1_ip
+        # Test node_1_ip
         node_1_ip = self.api_data.status_content_1["result"]["node_ip"]
         self.assertEqual(node_1_ip, self.api_data.env_dict["NODE_1_IP"])
-        # test_node_2_ip
+        # Test node_2_ip
         node_2_ip = self.api_data.status_content_2["result"]["node_ip"]
         self.assertEqual(node_2_ip, self.api_data.env_dict["NODE_2_IP"])
-
-        # test_node_1_peers_by_id
-        connected_node_1_id = list(self.api_data.status_content_1["result"]["connected_nodes"].keys())[0]
-        self.assertEqual(self.api_data.status_content_2["result"]["node_id"], connected_node_1_id)
-        # test_node_2_peers_by_id
-        connected_node_2_id = list(self.api_data.status_content_2["result"]["connected_nodes"].keys())[0]
-        self.assertEqual(self.api_data.status_content_1["result"]["node_id"], str(connected_node_2_id))
-        # test_node_1_peers_by_ip
-        connected_node_1_id = list(self.api_data.status_content_1["result"]["connected_nodes"].keys())[0]
-        connected_node_1_ip = self.api_data.status_content_1["result"]["connected_nodes"].get(connected_node_1_id)[0]
-        self.assertEqual(self.api_data.env_dict["NODE_2_IP"], connected_node_1_ip)
-        # test_node_2_peers_by_ip
-        connected_node_2_id = list(self.api_data.status_content_2["result"]["connected_nodes"].keys())[0]
-        connected_node_2_ip = self.api_data.status_content_2["result"]["connected_nodes"].get(connected_node_2_id)[0]
-        self.assertEqual(self.api_data.env_dict["NODE_1_IP"], connected_node_2_ip)
-        # use assertIn
+        # Test node_1_peers_by_id
+        connected_node_1_id = self.api_data.status_content_1["result"]["connected_nodes"]
+        self.assertIn(self.api_data.status_content_2["result"]["node_id"], connected_node_1_id)
+        # Test node_2_peers_by_id
+        connected_node_2_id = self.api_data.status_content_2["result"]["connected_nodes"]
+        self.assertIn(self.api_data.status_content_1["result"]["node_id"], connected_node_2_id)
+        # Test node_1_peers_by_ip
+        connected_node_1_ip = self.api_data.status_content_1["result"]["connected_nodes"]
+        self.assertIn(self.api_data.env_dict["NODE_2_IP"], str(connected_node_1_ip))
+        # Test node_2_peers_by_ip
+        connected_node_2_ip = self.api_data.status_content_2["result"]["connected_nodes"]
+        self.assertIn(self.api_data.env_dict["NODE_1_IP"], str(connected_node_2_ip))
 
 
 if __name__ == "__main__":
