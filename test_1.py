@@ -7,23 +7,6 @@ import requests
 from dotenv import dotenv_values
 
 
-#def get_env_data(env_path: str) -> dict:
-#    env_dict = {}
-#    with open(env_path) as f:
-#        lines = f.read().splitlines()
-#    for line in lines:
-#        line = line.strip()
-#        if not line or line.startswith("#") or "=" not in line:
-#            continue
-#        if "#" in line:
-#            line = line.split("#")[0].strip()
-#        key, value = line.split("=", maxsplit=1)
-#        if '"' in value:
-#            value = value.replace('"', '')
-#        env_dict[key] = value
-#    return env_dict
-
-
 class JsonApi():
     def get_status(self) -> tuple[dict[str, str], str]:
         headers = {'Content-type': 'application/json'}

@@ -1,8 +1,7 @@
 import sys
-import datetime
 import shutil
 import argparse
-from datetime import datetime
+import datetime
 
 
 class Info:
@@ -28,14 +27,12 @@ def replace_ts_in_file(info, genesis_timestamp_delay):
                 current_ts_ = round(current_ts__.timestamp()) * 1000
                 current_ts = '"' + str(current_ts_) + '"'
                 info.file_content[i] = "GENESIS_TIMESTAMP=" + current_ts
-        # f.close() # useless this is already closed because of: with ...:
 
 
 def gen_new_env(info):
     with open(info.env_file, "w") as n:
         for i in range(info.len_content):
             n.write(info.file_content[i])
-        # n.close()
 
 
 def main(args):
