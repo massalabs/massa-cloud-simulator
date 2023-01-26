@@ -5,3 +5,6 @@ venv
 __pycache__
 config.toml
 config.toml.old
+
+# IDE
+.idea

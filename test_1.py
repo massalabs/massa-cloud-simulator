@@ -1,25 +1,27 @@
 import json
 import argparse
 import unittest
+from functools import partial
 
 import requests
+from dotenv import dotenv_values
 
 
-def get_env_data(env_path: str) -> dict:
-    env_dict = {}
-    with open(env_path) as f:
-        lines = f.read().splitlines()
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        if "#" in line:
-            line = line.split("#")[0].strip()
-        key, value = line.split("=", maxsplit=1)
-        if '"' in value:
-            value = value.replace('"', '')
-        env_dict[key] = value
-    return env_dict
+#def get_env_data(env_path: str) -> dict:
+#    env_dict = {}
+#    with open(env_path) as f:
+#        lines = f.read().splitlines()
+#    for line in lines:
+#        line = line.strip()
+#        if not line or line.startswith("#") or "=" not in line:
+#            continue
+#        if "#" in line:
+#            line = line.split("#")[0].strip()
+#        key, value = line.split("=", maxsplit=1)
+#        if '"' in value:
+#            value = value.replace('"', '')
+#        env_dict[key] = value
+#    return env_dict
 
 
 class JsonApi():
@@ -44,15 +46,15 @@ class Api():
         return response.json()
 
     def __getattr__(self, item):
-        print("__getattribute__ ", item)
+        # Call function from json api
         f = getattr(self._api, item)
         headers, payload = f()
-        return self.make_request(self.url_public, headers, payload)
+        return partial(self.make_request, self.url_public, headers, payload)
 
 
 class TestStringMethods(unittest.TestCase):
-    def setUp(self) -> None:
-        self.env_dict = get_env_data(".env")
+    def setUp(self, env_filepath=".env") -> None:
+        self.env_dict = dotenv_values(env_filepath)
         self.api_public_1 = Api(self.env_dict["URL_PUBLIC_NODE_1"])
         self.api_public_2 = Api(self.env_dict["URL_PUBLIC_NODE_2"])
 
