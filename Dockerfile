@@ -88,14 +88,14 @@ RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
 WORKDIR /home/$BUILD_USER/massa_exec_files/massa-node/
 
 # Copy local files to container
-COPY requirements.txt .
+COPY requirements_deploy.txt .
 COPY config.py .
 
 # Create virtual env using python
 RUN python3 -m venv venv
 
 # Install requirements using pip
-RUN venv/bin/pip install -r requirements.txt
+RUN venv/bin/pip install -r requirements_deploy.txt
 
 # Update config.tolm file
 RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK" -n "$NODE_IP"
