@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Sleeping for 60 seconds..."
 sleep 60
   
 >&2 echo "Executing Sleep Command"

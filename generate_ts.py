@@ -1,3 +1,5 @@
+# Generate timestamp in order to define GENESIS TIMESTAMP and update .env file
+
 import sys
 import shutil
 import argparse

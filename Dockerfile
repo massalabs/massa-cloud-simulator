@@ -1,27 +1,27 @@
 ############# BUILDTIME #############
 # BuildTime Image
-FROM rustlang/rust:nightly AS BuildTime
+FROM rustlang/rust:nightly AS Builder
 
 # Update the machine
-RUN apt-get update -y
+RUN apt update -y && apt upgrade -y
 
 # Upgrade the machine
-RUN apt-get upgrade -y
+# RUN apt-get upgrade -y
 
 # Install required packages
-RUN apt-get install pkg-config git build-essential clang libclang-dev -y
+RUN apt install pkg-config git build-essential clang libclang-dev -y
 
 # Configure the path for rust
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install nigthly using rustup
-RUN rustup toolchain install nightly-2022-11-14
+# RUN rustup toolchain install nightly-2022-11-14
 
 # Set nigthly as default
-RUN rustup default nightly-2022-11-14
+# RUN rustup default nightly-2022-11-14
 
 # Clears out the local repository of retrieved package files
-RUN apt-get clean -y
+RUN apt clean -y
 
 # Clone the repository massa
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
@@ -30,8 +30,7 @@ RUN git clone --branch testnet https://github.com/massalabs/massa.git
 WORKDIR /massa
 
 # Build massa-node and the massa-client
-RUN cargo build --release --bin massa-node --bin massa-client --features sandbox
-
+RUN cargo build -j 8 --release --bin massa-node --bin massa-client --features sandbox
 
 ############# RUNTIME #############
 # Production Image
@@ -48,18 +47,19 @@ ARG BOOTSTRAP_PUBK
 ARG NODE_IP
 
 # Update the machine
-RUN apt-get update -y
+RUN apt update -y && apt upgrade -y
 
 # Upgrade the machine
-RUN apt-get upgrade -y
+# RUN apt-get upgrade -y
 
 # Install required packages
-RUN apt-get install python3-venv \
-                    procps nano curl -y
-                    # procps, nano and curl are used for debugging inside the container
+RUN apt install python3 python3-venv -y
+
+# DEBUG (tools to debug inside container)
+RUN apt install procps nano curl net-tools iproute2 -y
 
 # Clears out the local repository of retrieved package files
-RUN apt-get clean -y
+RUN apt clean -y
 
 # Create the user $USER
 RUN useradd $BUILD_USER -m -u 1001
@@ -71,15 +71,15 @@ RUN echo "$BUILD_USER:$USER_PWD" | chpasswd
 WORKDIR /home/$BUILD_USER/massa_exec_files
 
 # Copy the config and the binarie of Massa Client
-COPY --from=BuildTime /massa/massa-client/config/  /home/$BUILD_USER/massa_exec_files/massa-client/config/
-COPY --from=BuildTime /massa/massa-client/base_config/ /home/$BUILD_USER/massa_exec_files/massa-client/base_config/
-COPY --from=BuildTime /massa/target/release/massa-client /home/$BUILD_USER/massa_exec_files/massa-client
+COPY --from=Builder /massa/massa-client/config/  /home/$BUILD_USER/massa_exec_files/massa-client/config/
+COPY --from=Builder /massa/massa-client/base_config/ /home/$BUILD_USER/massa_exec_files/massa-client/base_config/
+COPY --from=Builder /massa/target/release/massa-client /home/$BUILD_USER/massa_exec_files/massa-client
 
 # Copy the config and the binarie of Massa Node
-COPY --from=BuildTime /massa/massa-node/config/ /home/$BUILD_USER/massa_exec_files/massa-node/config/
-COPY --from=BuildTime /massa/massa-node/base_config/ /home/$BUILD_USER/massa_exec_files/massa-node/base_config/
-COPY --from=BuildTime /massa/target/release/massa-node /home/$BUILD_USER/massa_exec_files/massa-node
-COPY --from=BuildTime /massa/massa-node/base_config/config.toml /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml
+COPY --from=Builder /massa/massa-node/config/ /home/$BUILD_USER/massa_exec_files/massa-node/config/
+COPY --from=Builder /massa/massa-node/base_config/ /home/$BUILD_USER/massa_exec_files/massa-node/base_config/
+COPY --from=Builder /massa/target/release/massa-node /home/$BUILD_USER/massa_exec_files/massa-node
+COPY --from=Builder /massa/massa-node/base_config/config.toml /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml
 
 # Change the permission of the folder
 RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
@@ -97,7 +97,7 @@ RUN python3 -m venv venv
 # Install requirements using pip
 RUN venv/bin/pip install -r requirements_deploy.txt
 
-# Update config.tolm file
+# Update config.toml file
 RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK" -n "$NODE_IP"
 
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key

@@ -7,7 +7,7 @@ import requests
 from dotenv import dotenv_values
 
 
-class JsonApi():
+class JsonApi:
     def get_status(self) -> tuple[dict[str, str], str]:
         headers = {'Content-type': 'application/json'}
         payload = json.dumps({
@@ -19,29 +19,33 @@ class JsonApi():
         return headers, payload
 
 
-class Api():
-    def __init__(self, url_public) -> None:
-        self.url_public = url_public
+class Api:
+    def __init__(self, url) -> None:
+        self.url = url
         self._api = JsonApi()
 
-    def make_request(self, url_public: str, headers, payload):
-        response = requests.post(url_public, headers=headers, data=payload)
+    def _make_request(self, headers, payload):
+        response = requests.post(self.url, headers=headers, data=payload)
         return response.json()
 
     def __getattr__(self, item):
         # Call function from json api
         f = getattr(self._api, item)
         headers, payload = f()
-        return partial(self.make_request, self.url_public, headers, payload)
+        # Return a function (that will make the json rpc call) ready to be called
+        return partial(self._make_request, headers, payload)
 
 
-class TestStringMethods(unittest.TestCase):
+class TestNodes(unittest.TestCase):
     def setUp(self, env_filepath=".env") -> None:
         self.env_dict = dotenv_values(env_filepath)
-        self.api_public_1 = Api(self.env_dict["URL_PUBLIC_NODE_1"])
-        self.api_public_2 = Api(self.env_dict["URL_PUBLIC_NODE_2"])
+        self.api_public_1 = Api(self.env_dict["NODE_1_API_URL_PUBLIC"])
+        self.api_public_2 = Api(self.env_dict["NODE_2_API_URL_PUBLIC"])
 
-    def test_status_nodes(self):
+    def test_status(self):
+
+        # Call get_status on nodes & check for proper connections
+
         content_get_status_1 = self.api_public_1.get_status()
         content_get_status_2 = self.api_public_2.get_status()
 
@@ -66,4 +70,4 @@ class TestStringMethods(unittest.TestCase):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    unittest.main()
+    unittest.main(verbosity=2)

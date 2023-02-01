@@ -6,9 +6,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
       args:
-        BUILD_USER: ${BUILD_USER}
-        USER_PWD: ${USER_PWD}
-        NODE_WALLET_PWD: ${NODE_WALLET_PWD}
+        BUILD_USER: ${OS_USER_NAME}
+        USER_PWD: ${OS_USER_PWD}
         BOOTSTRAP_IP: ""
         BOOTSTRAP_PUBK: ""
         NODE_IP: ${NODE_1_IP}
@@ -17,22 +16,17 @@ services:
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
     environment:
       - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
-      #- RUST_BACKTRACE=full (Debugging)
+      #- RUST_BACKTRACE=full (Debug)
     image: node_1_image
-    user: ${BUILD_USER}
+    user: ${OS_USER_NAME}
     command: "./massa-node -p ${NODE_WALLET_PWD}"
-    ports:
-      - target: 33034 # Private Port (target -> Inside the container)
-        published: 33034 # (published -> Exposed Port)
-        protocol: tcp
-        mode: host
-      - target: 33035 # Public Port
-        published: 33035
-        protocol: tcp
-        mode: host
+    # command: ["python3", "-m", "http.server"] # Debug
+    ports: # HOST:CONTAINER
+       - "33034:33034" # jsonrpc api private
+       - "33035:33035" # jsonrpc api public
     networks:
       massa_cloud_network:
-        ipv4_address: 11.0.0.11
+        ipv4_address: "11.0.0.11"
 
   node_2:
     container_name: node_2_container
@@ -40,9 +34,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
       args:
-        BUILD_USER: ${BUILD_USER}
-        USER_PWD: ${USER_PWD}
-        NODE_WALLET_PWD: ${NODE_WALLET_PWD}
+        BUILD_USER: ${OS_USER_NAME}
+        USER_PWD: ${OS_USER_PWD}
         BOOTSTRAP_IP: ${NODE_1_IP}
         BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
         NODE_IP: ${NODE_2_IP}
@@ -52,29 +45,22 @@ services:
     environment:
       - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
     image: node_2_image
-    user: ${BUILD_USER}
+    user: ${OS_USER_NAME}
     depends_on:
       - node_1
     command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
-    ports:
-      - target: 33034 # Private Port
-        published: 34034
-        protocol: tcp
-        mode: host
-      - target: 33035 # Public Port
-        published: 34035
-        protocol: tcp
-        mode: host
+    # command: ["python3", "-m", "http.server"] # Debug
+    ports: # HOST:CONTAINER
+      - "34034:33034" # jsonrpc private
+      - "34035:33035" # jsonrpc public
+      # - "34036:33036" # grpc
     networks:
       massa_cloud_network:
-        ipv4_address: 11.0.0.12
-
+        ipv4_address: "11.0.0.12"
 
 networks:
   massa_cloud_network:
-    name: massa_cloud_network
-    driver: bridge
     ipam:
-     config:
-       - subnet: 11.0.0.0/16
-         gateway: 11.0.0.254
+      driver: default
+      config:
+        - subnet: "11.0.0.0/16"
