@@ -36,7 +36,7 @@ Setup:
 
 ```commandline
 python3 -m venv venv_tests
-venv_tests/bin/python -m pip install requirements_tests.txt
+venv_tests/bin/python -m pip install -r requirements_tests.txt
 ```
 
 Run:
