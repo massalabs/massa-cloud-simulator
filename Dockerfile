@@ -1,6 +1,15 @@
-############# BUILDTIME #############
-# BuildTime Image
+############# BUILDER #############
+# Builder Image
 FROM rustlang/rust:nightly AS Builder
+
+ARG MASSA_GIT_BRANCH="testnet_19"
+ARG MASSA_GIT_REPO="https://github.com/massalabs/massa.git"
+ARG CARGO_BUILD_JOBS=4
+
+# Debug
+#RUN echo "Cloning massa repo from $MASSA_GIT_REPO, branch (or commit): $MASSA_GIT_BRANCH"
+#RUN echo "Building using ${CARGO_BUILD_JOBS} jobs"
+#RUN env | grep CARGO_BUILD_JOBS
 
 # Update the machine
 RUN apt update -y && apt upgrade -y
@@ -14,23 +23,17 @@ RUN apt install pkg-config git build-essential clang libclang-dev -y
 # Configure the path for rust
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# Install nigthly using rustup
-# RUN rustup toolchain install nightly-2022-11-14
-
-# Set nigthly as default
-# RUN rustup default nightly-2022-11-14
-
 # Clears out the local repository of retrieved package files
 RUN apt clean -y
 
 # Clone the repository massa
-RUN git clone --branch testnet https://github.com/massalabs/massa.git
+RUN git clone --branch $MASSA_GIT_BRANCH $MASSA_GIT_REPO
 
 # Move to massa directory
 WORKDIR /massa
 
-# Build massa-node and the massa-client
-RUN cargo build -j 8 --release --bin massa-node --bin massa-client --features sandbox
+# Build
+RUN cargo build --release --bin massa-node --bin massa-client --features sandbox
 
 ############# RUNTIME #############
 # Production Image

@@ -7,6 +7,9 @@ services:
       dockerfile: ./Dockerfile
       args:
         BUILD_USER: ${OS_USER_NAME}
+        MASSA_GIT_REPO: ${MASSA_GIT_REPO}
+        MASSA_GIT_BRANCH: ${MASSA_GIT_BRANCH}
+        CARGO_BUILD_JOBS: ${CARGO_BUILD_JOBS}
         USER_PWD: ${OS_USER_PWD}
         BOOTSTRAP_IP: ""
         BOOTSTRAP_PUBK: ""
@@ -35,15 +38,19 @@ services:
       dockerfile: ./Dockerfile
       args:
         BUILD_USER: ${OS_USER_NAME}
+        MASSA_GIT_REPO: ${MASSA_GIT_REPO}
+        MASSA_GIT_BRANCH: ${MASSA_GIT_BRANCH}
+        CARGO_BUILD_JOBS: ${CARGO_BUILD_JOBS}
         USER_PWD: ${OS_USER_PWD}
         BOOTSTRAP_IP: ${NODE_1_IP}
-        BOOTSTRAP_PUBK: ${NODE_1_PUBLIC_KEY}
+        BOOTSTRAP_PUBK: ${NODE_1_ID}
         NODE_IP: ${NODE_2_IP}
         NODE_PRIVKEY_FILE: config/node_2_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
     environment:
       - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+      #- RUST_BACKTRACE=full (Debug)
     image: node_2_image
     user: ${OS_USER_NAME}
     depends_on:
