@@ -1,8 +1,9 @@
+# Update config.toml file for Massa node(s) (used in Dockerfile)
+
 import sys
 import shutil
 from pathlib import Path
 import argparse
-import os
 
 # Third Part Library
 import tomli
@@ -11,11 +12,11 @@ import tomli_w
 
 class Config:
     def __init__(self, config_file, ip, port, address, node_ip, bind_private_ip, bind_private_port):
-        self.config_file = Path(args.config_file)
-        self.ip = args.ip
-        self.port = args.port
-        self.address = args.address
-        self.node_ip = args.node_ip
+        self.config_file = Path(config_file)
+        self.ip = ip
+        self.port = port
+        self.address = address
+        self.node_ip = node_ip
         self.bind_private_ip = bind_private_ip
         self.bind_private_port = bind_private_port
         self.toml_dict = {}

@@ -1,56 +1,66 @@
 # Massa cloud simulator
-### Pre-requisites
-- Make sur you have [Docker]("https://www.docker.com/") installed and running on your computer, however you can find informations about how to install Docker [here]("https://docs.docker.com/get-docker/").
 
-- You also need to have [Python3]("https://www.python.org/download/releases/3.0/") installed on your device in order to launch the simulator, you can download it [here]("https://www.python.org/downloads/").
+## Setup
 
----
-## Environment variables
+Install the following packages:
 
-You have to **_edit_** the `env.sample` file by **_replacing_** the content in order to use your own configuration.
+* [Docker](https://www.docker.com)
+* [Python3](https://www.python.org)
 
-After that, let's **_copy_** the `env.sample` file to a new file `.env` using the folowing command:
-```sh
-    cp -v env.sample .env
+Create a .env file:
+
+* ```cp -v env.sample .env```
+* [Optional] edit and tweak it
+
+## Running the simulator locally (via docker compose)
+
+```commandline
+./launch.sh
 ```
 
----
-## Launch the Cloud Simulator
+Note: for now, the simulator runs 2 containers:
+* node_1_container:
+  * **genesis node**
+    * start before the genesis timestamp
+  * ip: 11.0.0.11
+  * api ports are the default ones (33034 & 33035)
+* node_2_container: node that bootstrap 
+  * bootstrap on node 1
+    * start after the genesis timestamp
+  * ip: 11.0.0.12
+  * api ports -> 34034 & 34035
 
-We can launch the **_simulator_** with the line bellow :
-```sh
-    ./launch.sh
+## Running tests
+
+Setup:
+
+```commandline
+python3 -m venv venv_tests
+venv_tests/bin/python -m pip install -r requirements_tests.txt
 ```
 
----
-## Testing part
+Run:
 
-- ### **Create a virtual environment with good dependencies**
-
-```sh
-    python3 -m venv venv
-    venv/bin/pip install -r requirements_tests.txt
+```commandline
+venv_tests/bin/python test_1.py
 ```
 
-- ### **Launch our test script**
-```sh
-    venv/bin/python test_1.py
+## Dev
+
+Usefull docker commands
+
+Open a shell in a running container
+
+```commandline
+    docker exec -it CONTAINER_NAME bash
 ```
 
----
-## Optional part (Good to know)
-
-### Acces to the container **environment** while running
-```sh
-    docker exec -it [container_name] bash
+View the logs of a container:
+```commandline
+    docker logs -f CONTAINER_NAME
 ```
 
-### To see the **logs** of a container :
-```sh
-    docker logs -f [container_name]
-```
-
-### To get the **IP Address** of severals containers :
-```sh
-    docker container inspect [container_name_1] [container_name_2] | grep -i IPAddress
+Inspect containers:
+```commandline
+    docker container inspect CONTAINER_NAME_1 CONTAINER_NAME_2 | grep -i IPAddress
 ```
