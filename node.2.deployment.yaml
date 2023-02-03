@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: node-2
+  name: node-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: node-2
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/massa-cloud-network: "true"
+        io.kompose.service: node-2
+    spec:
+      containers:
+        - name: node-2-container
+          image: redaram/node_2_image:latest
+          envFrom:
+            - configMapRef:
+                name: nodes-config
+          command: [ "/bin/bash", "-c", "./wait_ts.sh && ./massa-node -p NODE_WALLET_PWD" ]
+          ports:
+            - containerPort: 33034
+            - containerPort: 33035
+#          resources: {}
+#      restartPolicy: Always
+#status: {}
