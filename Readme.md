@@ -51,9 +51,14 @@ Usefull docker commands
 
 Open a shell in a running container
 
-```commandline
-    docker exec -it CONTAINER_NAME bash
-```
+- On Linux:
+  ```commandline
+      docker exec -it CONTAINER_NAME bash
+  ```
+- On Windows:
+  ```commandline
+      winpty docker exec -it CONTAINER_NAME bash
+  ```
 
 View the logs of a container:
 ```commandline
