@@ -1,0 +1,3 @@
+
+# Declare files that will always have LF line endings on checkout.
+wait_ts.sh text eol=lf

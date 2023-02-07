@@ -2,6 +2,7 @@
 .env.old
 .memo
 venv
+venv_*
 __pycache__
 config.toml
 config.toml.old
