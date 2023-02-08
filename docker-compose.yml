@@ -57,7 +57,6 @@ services:
     user: ${OS_USER_NAME}
     depends_on:
       - node_1
-    # command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     command: ["python3", "./wait_ts.py", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     # command: ["python3", "-m", "http.server"] # Debug
     ports: # HOST:CONTAINER
