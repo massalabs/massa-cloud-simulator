@@ -106,7 +106,8 @@ RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-nod
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
 COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
 COPY $NODE_CONFIG_INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
-COPY wait_ts.sh /home/$BUILD_USER/massa_exec_files/massa-node
+# COPY wait_ts.sh /home/$BUILD_USER/massa_exec_files/massa-node
+COPY wait_ts.py /home/$BUILD_USER/massa_exec_files/massa-node
 
 RUN rm -v /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_peers.json
 RUN echo "[]" >> /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_peers.json

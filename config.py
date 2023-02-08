@@ -9,7 +9,6 @@ import argparse
 import tomli
 import tomli_w
 
-
 class Config:
     def __init__(self, config_file, ip, port, address, node_ip, bind_private_ip, bind_private_port):
         self.config_file = Path(config_file)
