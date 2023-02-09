@@ -2,7 +2,7 @@
 
 set -e
 
-# DOCKER_COMPOSE_BIN="venv_podman/bin/podman-compose"
+# DOCKER_COMPOSE_BIN="../massa-cloud-simulator/venv_podman/bin/podman-compose"
 DOCKER_COMPOSE_BIN="docker-compose"
 
 ENV_FILE=".env"

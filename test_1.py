@@ -2,6 +2,7 @@ import json
 import argparse
 import unittest
 from functools import partial
+from pprint import pprint
 
 import requests
 from dotenv import dotenv_values
@@ -48,6 +49,12 @@ class TestNodes(unittest.TestCase):
 
         content_get_status_1 = self.api_public_1.get_status()
         content_get_status_2 = self.api_public_2.get_status()
+
+        # Debug
+        # print("node 1 - get_ status:")
+        # pprint(content_get_status_1)
+        # print("node 2 - get_ status:")
+        # pprint(content_get_status_2)
 
         # Test node_1_ban_count
         self.assertEqual(content_get_status_1["result"]["network_stats"]["banned_peer_count"], 0)

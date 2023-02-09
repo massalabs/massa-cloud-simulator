@@ -18,6 +18,8 @@ Create a .env file:
 ./launch.sh
 ```
 
+Note: WSL user might need to run: sudo apt install dos2unix && dos2unix launch.sh
+
 Note: for now, the simulator runs 2 containers:
 * node_1_container:
   * **genesis node**
@@ -47,7 +49,7 @@ venv_tests/bin/python test_1.py
 
 ## Dev
 
-Usefull docker commands
+Useful docker commands
 
 Open a shell in a running container
 

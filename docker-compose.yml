@@ -17,6 +17,7 @@ services:
         NODE_PRIVKEY_FILE: config/node_1_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
+        CONFIG_USER_TWEAK: ${CONFIG_USER_TWEAK}
     environment:
       - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
       #- RUST_BACKTRACE=full (Debug)
@@ -48,6 +49,7 @@ services:
         NODE_PRIVKEY_FILE: config/node_2_privkey.key
         NODE_CONFIG_INITIAL_LEDGER: config/initial_ledger.json
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
+        CONFIG_USER_TWEAK: ${CONFIG_USER_TWEAK}
     environment:
       - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
       #- RUST_BACKTRACE=full (Debug)
@@ -55,7 +57,7 @@ services:
     user: ${OS_USER_NAME}
     depends_on:
       - node_1
-    command: ["./wait_ts.sh", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
+    command: ["python3", "./wait_ts.py", "./massa-node", "-p", "${NODE_WALLET_PWD}"]
     # command: ["python3", "-m", "http.server"] # Debug
     ports: # HOST:CONTAINER
       - "34034:33034" # jsonrpc private
