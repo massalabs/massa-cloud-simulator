@@ -29,7 +29,7 @@ services:
        - "33035:33035" # jsonrpc api public
     networks:
       massa_cloud_network:
-        ipv4_address: "11.0.0.11"
+        ipv4_address: ${NODE_1_IP}
 
   node_2:
     container_name: node_2_container
@@ -63,7 +63,7 @@ services:
       # - "34036:33036" # grpc
     networks:
       massa_cloud_network:
-        ipv4_address: "11.0.0.12"
+        ipv4_address: ${NODE_2_IP}
 
 networks:
   massa_cloud_network:

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+### INSTALLATION PART ###
+
 # Install Kubectl
 # Source : https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/
 sudo apt-get update && sudo apt-get install -y apt-transport-https
@@ -24,6 +27,13 @@ chmod +x kompose
 sudo mv ./kompose /usr/local/bin/kompose
 
 
-# # Convert the docker-compose file to files that we can use with kubectl
-# kompose convert
+### DEVELOPMENT PART ###
+
+# # Deploie yaml file using kubectl
 # kubectl apply -f node-1-service.yaml, node-2-service.yaml, node-1-deployment.yaml, massa-cloud-network-networkpolicy.yaml, node-2-deployment.yaml
+
+# # Launch minikube
+# minikube start
+
+# # Launch the dashboard to see the deployment
+# minikube dashboard

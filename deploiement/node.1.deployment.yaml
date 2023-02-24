@@ -26,7 +26,6 @@ spec:
       containers:
         - name: node-1-container
           image: redaram/node_1_image:latest
-          command: [ "/bin/sh", "-c", "env" ]
           envFrom:
           - configMapRef:
               name: nodes-config

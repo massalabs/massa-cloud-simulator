@@ -9,6 +9,8 @@ metadata:
     io.kompose.service: node-1
   name: node-1
 spec:
+  selector:
+    io.kompose.service: node-1
   ports:
     - name: "33034"
       port: 33034
@@ -16,7 +18,5 @@ spec:
     - name: "33035"
       port: 33035
       targetPort: 33035
-  selector:
-    io.kompose.service: node-1
 status:
   loadBalancer: {}
