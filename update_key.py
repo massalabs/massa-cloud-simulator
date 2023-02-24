@@ -18,11 +18,10 @@ def main(args):
     indent_spaces_count = 4
 
     # read .env
-    env = dotenv_values(".env")
-
+    env = dotenv_values(args.env_file)
     # Update initial ledger
 
-    ledger_filepath = "config/initial_ledger.json"
+    ledger_filepath = args.ledger_filepath
     with open(ledger_filepath) as fp:
         content = json.load(fp)
 
@@ -44,7 +43,7 @@ def main(args):
 
     # Update initial_rolls.json
 
-    rolls_filepath = "config/initial_rolls.json"
+    rolls_filepath = args.rolls_filepath
     with open(rolls_filepath) as fp:
         content = json.load(fp)
 
@@ -96,5 +95,11 @@ def main(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--env_file", help="Env file to get the good values", default=".env",
+                    type=str, required=False)
+    parser.add_argument("-l", "--ledger_filepath", help="Filepath to the initial_ledger file", default="base_config/initial_ledger.json",
+                    type=str, required=False)
+    parser.add_argument("-r", "--rolls_filepath", help="Filepath to the initial_rolls file", default="base_config/initial_rolls.json",
+                    type=str, required=False)
     args = parser.parse_args()
     main(args)
