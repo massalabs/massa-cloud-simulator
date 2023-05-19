@@ -1,11 +1,21 @@
 {
-    "A12BUit1MvW3ZnTtgYwAd4j8D4ZGA6BQo7GVnrMyByqmttiLeV5K": {
+    "AU12e1wofeZnGtptk5XNvyXQLU7Qx9yUwbeaaJPYyJpuSDjekJwcd": {
         "balance": "80000000",
         "datastore": {},
         "bytecode": []
     },
-    "A1bATGfhM45J62UQySTV41iHvBFBtJa1j3ZqsUrDxmfhvs5XW95": {
-        "balance": "0",
+    "AU1ooNZCjuXLmyVcRSybiE6WVcyF2GPeCkkyzKKuK3VXdfdxnvZQ": {
+        "balance": "80000000",
+        "datastore": {},
+        "bytecode": []
+    },
+    "AU1xEJ1YFbhtpkivsLQvmAgh8Xx1vxvSp3r7xTCZd8nHepNs9KsE": {
+        "balance": "80000000",
+        "datastore": {},
+        "bytecode": []
+    },
+    "AU127JLMfBkMSD8QZ7WTYRXRXMEPXsQRj4aWkXxjnEajKqdfGzeUr": {
+        "balance": "80000000",
         "datastore": {},
         "bytecode": []
     }

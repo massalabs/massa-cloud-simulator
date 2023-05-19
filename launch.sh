@@ -3,7 +3,7 @@
 set -e
 
 # DOCKER_COMPOSE_BIN="../massa-cloud-simulator/venv_podman/bin/podman-compose"
-DOCKER_COMPOSE_BIN="docker-compose"
+DOCKER_COMPOSE_BIN="docker compose" # "docker-compose" modified
 
 ENV_FILE=".env"
 if [ ! -e "$ENV_FILE" ]

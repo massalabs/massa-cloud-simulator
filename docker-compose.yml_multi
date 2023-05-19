@@ -19,7 +19,7 @@ services:
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
         CONFIG_USER_TWEAK: ${CONFIG_USER_TWEAK}
     environment:
-      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP1}
       #- RUST_BACKTRACE=full (Debug)
     image: node_1_image
     user: ${OS_USER_NAME}
@@ -51,7 +51,7 @@ services:
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
         CONFIG_USER_TWEAK: ${CONFIG_USER_TWEAK}
     environment:
-      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP2}
       #- RUST_BACKTRACE=full (Debug)
     image: node_2_image
     user: ${OS_USER_NAME}
@@ -86,7 +86,7 @@ services:
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
         CONFIG_USER_TWEAK: ${CONFIG_USER_TWEAK}
     environment:
-      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP3}
       #- RUST_BACKTRACE=full (Debug)
     image: node_3_image
     user: ${OS_USER_NAME}
@@ -122,7 +122,7 @@ services:
         NODE_CONFIG_INITIAL_ROLLS: config/initial_rolls.json
         CONFIG_USER_TWEAK: ${CONFIG_USER_TWEAK}
     environment:
-      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP}
+      - GENESIS_TIMESTAMP=${GENESIS_TIMESTAMP4}
       #- RUST_BACKTRACE=full (Debug)
     image: node_4_image
     user: ${OS_USER_NAME}

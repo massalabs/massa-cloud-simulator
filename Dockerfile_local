@@ -2,7 +2,7 @@
 # Builder Image
 FROM rustlang/rust:nightly AS Builder
 
-ARG MASSA_GIT_BRANCH="23df894fa3396dfbb6950a1e90122a44ae167c9c" 
+ARG MASSA_GIT_BRANCH="testnet_19"
 ARG MASSA_GIT_REPO="https://github.com/massalabs/massa.git"
 ARG CARGO_BUILD_JOBS=4
 
@@ -27,16 +27,16 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN apt clean -y
 
 # Clone the repository massa
-RUN git clone $MASSA_GIT_REPO
+# RUN git clone $MASSA_GIT_REPO
+COPY ./massa /massa
 
 # Move to massa directory
 WORKDIR /massa
 
-# switch to commit
-RUN git checkout $MASSA_GIT_BRANCH
+# RUN git checkout $MASSA_GIT_BRANCH
 
 # Build
-RUN cargo build --release --bin massa-node --bin massa-client --features sandbox
+#RUN cargo build --release --bin massa-node --bin massa-client --features sandbox
 
 ############# RUNTIME #############
 # Production Image
@@ -78,15 +78,17 @@ RUN echo "$BUILD_USER:$USER_PWD" | chpasswd
 WORKDIR /home/$BUILD_USER/massa_exec_files
 
 # Copy the config and the binarie of Massa Client
-COPY --from=Builder /massa/massa-client/config/  /home/$BUILD_USER/massa_exec_files/massa-client/config/
-COPY --from=Builder /massa/massa-client/base_config/ /home/$BUILD_USER/massa_exec_files/massa-client/base_config/
-COPY --from=Builder /massa/target/release/massa-client /home/$BUILD_USER/massa_exec_files/massa-client
+COPY ./massa/massa-client/config/  /home/$BUILD_USER/massa_exec_files/massa-client/config/
+COPY ./massa/massa-client/base_config/ /home/$BUILD_USER/massa_exec_files/massa-client/base_config/
+# COPY --from=Builder /massa/target/release/massa-client /home/$BUILD_USER/massa_exec_files/massa-client
+COPY ./massa/target/release/massa-client /home/$BUILD_USER/massa_exec_files/massa-client
 
 # Copy the config and the binarie of Massa Node
-COPY --from=Builder /massa/massa-node/config/ /home/$BUILD_USER/massa_exec_files/massa-node/config/
-COPY --from=Builder /massa/massa-node/base_config/ /home/$BUILD_USER/massa_exec_files/massa-node/base_config/
-COPY --from=Builder /massa/target/release/massa-node /home/$BUILD_USER/massa_exec_files/massa-node
-COPY --from=Builder /massa/massa-node/base_config/config.toml /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml
+COPY ./massa/massa-node/config/ /home/$BUILD_USER/massa_exec_files/massa-node/config/
+COPY ./massa/massa-node/base_config/ /home/$BUILD_USER/massa_exec_files/massa-node/base_config/
+# COPY --from=Builder /massa/target/release/massa-node /home/$BUILD_USER/massa_exec_files/massa-node
+COPY ./massa/target/release/massa-node /home/$BUILD_USER/massa_exec_files/massa-node
+COPY ./massa/massa-node/base_config/config.toml /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml
 
 # Change the permission of the folder
 RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
