@@ -14,6 +14,8 @@ else
     echo "Found env file: $ENV_FILE"
 fi
 
+python3 generate_staking_files.py
+
 $DOCKER_COMPOSE_BIN build
 
 python3 generate_ts.py

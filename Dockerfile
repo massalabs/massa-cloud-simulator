@@ -46,6 +46,7 @@ FROM ubuntu:22.04 AS runtime
 ARG BUILD_USER
 ARG USER_PWD
 ARG NODE_PRIVKEY_FILE
+ARG NODE_STAKING_FILE
 ARG NODE_CONFIG_INITIAL_LEDGER
 ARG NODE_CONFIG_INITIAL_ROLLS
 ARG BOOTSTRAP_IP
@@ -108,6 +109,7 @@ RUN venv/bin/pip install -r requirements_deploy.txt
 RUN venv/bin/python config.py -e -c /home/$BUILD_USER/massa_exec_files/massa-node/base_config/config.toml -i "$BOOTSTRAP_IP" -a "$BOOTSTRAP_PUBK" -n "$NODE_IP" ${CONFIG_USER_TWEAK}
 
 COPY $NODE_PRIVKEY_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/node_privkey.key
+COPY $NODE_STAKING_FILE /home/$BUILD_USER/massa_exec_files/massa-node/config/staking_wallet.dat
 COPY $NODE_CONFIG_INITIAL_LEDGER /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_ledger.json
 COPY $NODE_CONFIG_INITIAL_ROLLS /home/$BUILD_USER/massa_exec_files/massa-node/base_config/initial_rolls.json
 COPY wait_ts.py /home/$BUILD_USER/massa_exec_files/massa-node
