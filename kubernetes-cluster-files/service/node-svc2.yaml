@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: massa-node-2
+spec:
+  selector:
+    app: node-2
+  ports:
+    - name: rpc-private
+      port: 33034
+      targetPort: 33034
+    - name: rpc-public
+      port: 33035
+      targetPort: 33035
+ 

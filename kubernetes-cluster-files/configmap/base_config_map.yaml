@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: massa-node-base-config-2
+data:
+  initial_peers.json: |-
+    {
+      "P12eqghSr2o1GjeAiMGsZ3gZme6V1aQxnVH6xEzVG7hhxEnh6TVT": {
+        "listeners": {
+          "10.244.0.51:31244": "Tcp"
+        },
+        "category": "Bootstrap"
+      }
+    }
+  initial_rolls.json: |-
+    {
+      "AU1pq3iCPfTJ71RWabin32iLof3mVggGo1u9c77Sr5sLZEDcdKi3": 1,
+      "AU1vtCLkm1965QWS4YwwTMH34FZxETgu3YKbNr7nzK81ofNeRNux": 1,
+      "AU1FB8pFe5qvxBhJgbr5wii9PSpMVCy8oqisrw3WdUMuCVC42LKb": 1,
+      "AU13ykBPBN4DKKcunGaDQh2bMHxLLSQVHqkEhen8aNcsBiv5CAYV": 1,
+      "AU1b2iW5ykCWEsHmMgeby84zstoCDEkHcNGqAEDeDhX1j9XsnUjQ": 1,
+      "AU12B24UfbcJuaN7PRrf7TaAmi687UnRfQYj8KPsNRo3sLfP7EamQ": 1
+    }

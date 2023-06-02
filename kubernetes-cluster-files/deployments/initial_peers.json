@@ -1,0 +1,8 @@
+{
+    "P17NxAPjDwB8Txr2ut6HZLozTkAG8Tw5B3VD76XArhEbWFbsF7f": {
+        "listeners": {
+            "10.109.245.187\n:31244": "Tcp"
+        },
+        "category": "Bootstrap"
+    }
+}

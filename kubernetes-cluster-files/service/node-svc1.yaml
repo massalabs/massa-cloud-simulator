@@ -1,0 +1,27 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: maasachain
+# spec:
+#   selector:
+#     app: maasachain
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 33035
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: massa-node-1
+spec:
+  selector:
+    app: node-1
+  ports:
+    - name: rpc-private
+      port: 33034
+      targetPort: 33034
+    - name: rpc-public
+      port: 33035
+      targetPort: 33035
+ 

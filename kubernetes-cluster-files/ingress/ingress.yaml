@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: massachain
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: massachain.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: massachain
+          servicePort: 80

@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: massa-node-1
+ 
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: node-1
+  template:
+    metadata:
+      labels:
+        app: node-1
+    spec:
+      containers:
+        - name: node-1
+          image: arshavee/massa-node:v13
+          env:
+          - name: GENESIS_TIMESTAMP
+            value: "1685533509000"
+          
+          # ports:
+          #   - containerPorapiVersion: apps/v1
+          ports:
+            - containerPort: 33034
+            - containerPort: 33035
+          volumeMounts:
+            - name: config-volume-1
+              mountPath: /massa/massa-node/config
+              readOnly: true
+            - name: base-initial-peers-1
+              mountPath: /massa/massa-node/base_config/initial_peers.json
+              subPath: "initial_peers.json"
+              readOnly: true
+            - name: base-initial-roles-1
+              mountPath: /massa/massa-node/base_config/initial_rolls.json
+              subPath: "initial_rolls.json"
+              readOnly: true
+            
+
+            #  for the debug_logs only
+            - name: base-config
+              mountPath: /massa/massa-node/base_config/config.toml
+              subPath: "config.toml"
+              readOnly: true    
+      volumes:
+          - name: config-volume-1
+            secret:
+              secretName: massa-secrets-1
+          - name: base-initial-peers-1
+            configMap:
+              name: base-config-initial-peers
+          - name: base-initial-roles-1
+            configMap:
+              name: base-config-initial-rolls
+
+          
+          #  for the debug_logs only
+          - name: base-config 
+            configMap:
+              name: base-config    
+           
+
+
+
+# kubectl create secret generic massa-secrets-1 \
+#     --from-file=node_privkey.key=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/config/node_keypair_1.key \
+#     --from-file=staking_wallet.dat=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/config/staking_wallet_1.dat
+    
+# kubectl create secret generic massa-secrets-2 \
+#     --from-file=node_privkey.key=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/config/node_keypair_2.key \
+#     --from-file=staking_wallet.dat=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/config/staking_wallet_2.dat
+
+
+# kubectl create configmap massa-node-base-config \
+#       --from-file=initial_peers.json=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/base_config/initial_peers.json \
+#       --from-file=initial_rolls.json=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/config/initial_rolls.json
+
+
+
+# kubectl create configmap base-config \
+#       --from-file=config.toml=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/base_config/config.toml
+      

@@ -1,0 +1,7 @@
+   Compiling massa_proto v0.1.0 (/massa/massa-proto)
+   Compiling jsonrpsee-core v0.18.2
+   Compiling unicode-segmentation v1.10.1
+   Compiling heck v0.3.3
+   Compiling jsonrpsee-server v0.18.2
+   Compiling massa_models v0.1.0 (/massa/massa-models)
+   Compiling structopt-derive v0.4.18

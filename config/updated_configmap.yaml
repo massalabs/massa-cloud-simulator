@@ -1,0 +1,84 @@
+apiVersion: v1
+data:
+  initial_peers.json: |-
+    [
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "149.202.86.103",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "149.202.89.125",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "158.69.120.215",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": false,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "158.69.23.120",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "198.27.74.5",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "198.27.74.52",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "54.36.174.177",
+            "last_alive": null,
+            "last_failure": null
+        },
+        {
+            "advertised": true,
+            "banned": false,
+            "peer_type": "Bootstrap",
+            "ip": "51.75.60.228",
+            "last_alive": null,
+            "last_failure": null
+        }
+    ]
+  initial_rolls.json: |-
+    {
+        "AU1pq3iCPfTJ71RWabin32iLof3mVggGo1u9c77Sr5sLZEDcdKi3": 1,
+        "AU1ThEU8KeyS4XwWUGV9VrvkNK5a1sxTyZdDDhnZruWJhjnqYnmx": 1,
+        "AU1kZewnG1UGdJXkF7PADb8GVVUuUCHGxKhun15AWUY3BqBZQQew": 1,
+        "AU1wjNVzCpAtrcxdCvkg9g5i3qkQBnMmgvLtNTfZ69hzaRNUkcn3": 1,
+        "AU1PeKs8qGmC1PDtnRaUfYbjGhGbBJkvU3gUNiP5yYaUWpDmCCLq": 1,
+        "AU12Tg9jDEzg3fLZSNAhcKeLfKdfbUitC8eDb3qBidErdz6aHNmRB": 1,
+        "AU12LMS8dzkLZZo3RhE8xNbXD9rhJKRefCA1nyTFWsVerxxAmbXJ2": 1,
+        "AU1UVcAdJLfWtcsHhxYhhoKfNm3U9xo9uRh76iJjcqkTEbotSmDp": 1
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: massa-node-base-config
