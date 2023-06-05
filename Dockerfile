@@ -15,6 +15,8 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 
 # Copy Rust project files to the container from git repo
+
+
 RUN git clone  --depth=1 --branch flag_private_addresses https://github.com/massalabs/massa.git
 
 WORKDIR /massa

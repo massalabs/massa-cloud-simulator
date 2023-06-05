@@ -1,13 +1,13 @@
 {
     "P1h7FemobjkPREJbYWgRQkd5BN3Yx2XakqPWRWgyxR5A2ZUeWCq": {
         "listeners": {
-            "10.111.67.188:31244": "Tcp"
+            "10.111.115.33:31244": "Tcp"
         },
         "category": "Bootstrap"
     },
     "P12fjB3hv2GnHfPvd8uAYd9udLSXgFrNioJALL98ZXRoeL29h4P1": {
         "listeners": {
-            "10.105.72.94:31244": "Tcp"
+            "10.110.132.216:31244": "Tcp"
         },
         "category": "Bootstrap"
     }

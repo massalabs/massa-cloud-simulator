@@ -15,10 +15,10 @@ spec:
     spec:
       containers:
         - name: node-1
-          image: arshavee/massa-node:v13
+          image: arshavee/massa-node:v15
           env:
           - name: GENESIS_TIMESTAMP
-            value: "1685959203000"
+            value: "1685968451000"
           
           # ports:
           #   - containerPorapiVersion: apps/v1
@@ -80,5 +80,5 @@ spec:
 
 
 # kubectl create configmap base-config \
-#       --from-file=config.toml=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/base_config/config.toml
+      # --from-file=config.toml=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/base_config/config.toml
       
