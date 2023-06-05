@@ -1,6 +1,0 @@
-apiVersion: apps/v1
-kind: ConfigMap
-metadata:
-  name: massa-node-base-config
-data:
-   --from-file=initial_peers.json=/home/arshavee/Desktop/MASSA\ internship/massa-cloud-simulator-main/initial_peers.json 
